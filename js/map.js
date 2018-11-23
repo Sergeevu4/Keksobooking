@@ -38,23 +38,26 @@ var photosArray = [
 
 var featuresArray = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
-var location = {x: 0, y: getRandomInteger(130, 630)};
-
 function generateData() {
   var data = [];
 
   for (var i = 0; i < 8; i++) {
+    var location = {
+      x: getRandomInteger(0, 1200),
+      y: getRandomInteger(130, 630)
+    };
+
     var object = {
       author: {
 
-        avatar: 'img/avatars/user0' + getRandomInteger(1, 8) + '.png'
+        avatar: 'img/avatars/user0' + i + '.png'
       },
 
       offer: {
 
         title: getRandomElement(titleArray),
 
-        address: 'location.' + location.x + ',' + 'location.' + location.y,
+        address: location.x + ',' + location.y,
 
         price: getRandomInteger(1000, 1000000),
 
