@@ -5,8 +5,10 @@
 *.pdf
 *.psd
 *.sublime*
+*.bat
 build/
 node_modules/
 npm-debug.log*
 Thumbs.db
 .vscode/
+*txt
