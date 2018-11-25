@@ -89,4 +89,44 @@ function generateData() {
 // console.log(generateData());
 // var generatedObjects = generateData();
 
+var map = document.querySelector('.map')
+map.classList.remove('map--faded');
 
+var pin = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
+
+function renderPin (array) {
+  var addLabel = pin.cloneNode(true);
+  var addLabelPin = addLabel.querySelector('.map__pin').style;
+  // Путь к шаблону кнопки
+
+  addLabelPin.left = array.object.offer.address.location.x;
+  addLabelPin.top = array.object.offer.address.location.y;
+  addLabelPin.src = array.object.author.avatar;
+  addLabelPin.alt = array.object.offer.title;
+
+  return addLabel;
+}
+
+var fragmentPin = document.createDocumentFragment();
+
+for (var i = 0; i < generateData.length; i++) {
+  fragmentPin.appendChild(renderPin(generateData([i])));
+}
+
+  pin.appendChild(fragmentPin);
+
+
+// for (var i = 0; i < generateData.length; i++) {
+//   var addLabel = pin.cloneNode(true);
+//   var addLabelPin = addLabel.querySelector('.map__pin').style;
+//   // Путь к шаблону кнопки
+
+//   addLabelPin.left = generateData[i].object.offer.address.location.x;
+//   addLabelPin.top = generateData[i].object.offer.address.location.y;
+//   addLabelPin.src = generateData[i].object.author.avatar;
+//   addLabelPin.alt = generateData[i].object.offer.title;
+
+//   pin.appendChild(addLabel);
+// }
