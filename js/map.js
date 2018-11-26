@@ -4,6 +4,7 @@ function getRandomInteger(min, max) {
   var rand = min - 0.5 + Math.random() * (max - min + 1);
   return Math.round(rand);
 }
+//
 
 function getRandomElement(array) {
   return array[getRandomInteger(0, array.length - 1)];
@@ -50,7 +51,7 @@ function generateData() {
     var object = {
       author: {
 
-        avatar: 'img/avatars/user0' + i + '.png'
+        avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
 
       offer: {
@@ -86,47 +87,113 @@ function generateData() {
   return data;
 }
 
-// console.log(generateData());
-// var generatedObjects = generateData();
+var generatedObjects = generateData();
 
 var map = document.querySelector('.map')
 map.classList.remove('map--faded');
 
-var pin = document.querySelector('#pin')
+var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-function renderPin (array) {
-  var addLabel = pin.cloneNode(true);
-  var addLabelPin = addLabel.querySelector('.map__pin').style;
+var pins = document.querySelector('.map__pins');
+
+function сreatePin(object) {
+  var clonedPin = pinTemplate.cloneNode(true);
+  var clonedPinStyle = clonedPin.style;
+  var sizePin = (50 + 70) / 2;
+
   // Путь к шаблону кнопки
+  clonedPinStyle.left = (object.location.x - sizePin) + 'px';
+  clonedPinStyle.top = (object.location.y - sizePin)+ 'px';
+  clonedPin.querySelector('img').src = object.author.avatar;
+  clonedPin.querySelector('img').alt = object.offer.title;
 
-  addLabelPin.left = array.object.offer.address.location.x;
-  addLabelPin.top = array.object.offer.address.location.y;
-  addLabelPin.src = array.object.author.avatar;
-  addLabelPin.alt = array.object.offer.title;
-
-  return addLabel;
+  return clonedPin;
 }
 
-var fragmentPin = document.createDocumentFragment();
+function createFragmentPins(array) {
+  var fragmentPin = document.createDocumentFragment();
 
-for (var i = 0; i < generateData.length; i++) {
-  fragmentPin.appendChild(renderPin(generateData([i])));
+  for (var i = 0; i < array.length; i++) {
+    fragmentPin.appendChild(сreatePin(array[i]));
+  }
+
+  return pins.appendChild(fragmentPin);
 }
 
-  pin.appendChild(fragmentPin);
+var postFragmentPins = createFragmentPins(generatedObjects);
 
 
-// for (var i = 0; i < generateData.length; i++) {
-//   var addLabel = pin.cloneNode(true);
-//   var addLabelPin = addLabel.querySelector('.map__pin').style;
-//   // Путь к шаблону кнопки
+var cardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.map__card');
+var map = document.querySelector('.map');
+var mapFilters = document.querySelector('.map__filters-container');
 
-//   addLabelPin.left = generateData[i].object.offer.address.location.x;
-//   addLabelPin.top = generateData[i].object.offer.address.location.y;
-//   addLabelPin.src = generateData[i].object.author.avatar;
-//   addLabelPin.alt = generateData[i].object.offer.title;
+function сreateCard(object) {
+  var clonedCard = cardTemplate.cloneNode(true);
+  // var typeHousing =
+  //   if (object.offer.type === 'flat') {
+  //     typeHousing = 'Квартира';
+  //   } else if (object.offer.type === 'bungalo') {
+  //       typeHousing = 'Бунгало';
+  //   } else if (object.offer.type === 'house') {
+  //       typeHousing = 'Дом';
+  //   } else if (object.offer.type === 'palace') {
+  //       typeHousing = 'Дворец';
+  //   } else {
+  //     typeHousing = '';
+  //   };
 
-//   pin.appendChild(addLabel);
-// }
+  // var typeHousing = switch (object.offer.type) {
+  //   case 'flat': 'Квартира';
+  //   break;
+  //   case 'bungalo': 'Бунгало';
+  //   break;
+
+  //   case 'house': 'Дом';
+  //   break;
+
+  //   case 'palace': 'Дворец';
+  //   break;
+
+  //   default: '';
+  //   break;
+  // };
+
+  var cloneCardPopupPhotos = cardTemplate.querySelector('.popup__photo').cloneNode(true);
+
+  cloneCardPopupPhotos.src = object.offer.photos;
+
+  clonedCard.querySelector('.popup__title').textContent = object.offer.title;
+  clonedCard.querySelector('.popup__text--address').textContent = object.offer.address;
+  clonedCard.querySelector('.popup__text--price').textContent = object.offer.price + '₽/ночь';
+
+  // clonedCard.querySelector('.popup__type').textContent = typeHousing;
+
+  clonedCard.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.rooms + ' гостей.';
+
+  clonedCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + object.offer.checkin + ', выезд до ' + object.offer.checkout + '.';
+
+  // clonedCard.querySelector('.popup__features').textContent = ;
+
+  // clonedCard.querySelector('.popup__description').textContent = object.offer.description;
+
+  clonedCard.querySelector('img').src = object.author.avatar;
+
+  return clonedCard;
+}
+
+
+function createFragmentCards(array) {
+  var fragmentCard = document.createDocumentFragment();
+
+  for (var i = 0; i < array.length; i++) {
+    fragmentCard.appendChild(сreateCard(array[i]));
+  }
+
+  return map.insertBefore(fragmentCard,mapFilters);
+}
+
+var postFragmentCards = createFragmentCards(generatedObjects);
