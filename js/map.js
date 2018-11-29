@@ -19,7 +19,7 @@ var MAX_GUESTS = 3;
 var SIZE_PIN_WIDTH = 50;
 var SIZE_PIN_HEIGHT = 70;
 
-//Размеры фотографий в карточках
+// Размеры фотографий в карточках
 var CARDS_PHOTO_WIDTH = '45';
 var CARDS_PHOTO_HEIGHT = '40';
 
@@ -30,9 +30,17 @@ var MAX_COORDINATE_X = 1200;
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
 
+// Перечисление объектов: типы аппартаментов
+var TypeArray = {
+  PALACE: 'Дворец',
+  FLAT: 'Квартира',
+  HOUSE: 'Дом',
+  BUNGALO: 'Бунгало'
+};
 
+// Функция по нахождению случайного элемента.
 function getRandomInteger(max, min) {
-  min = min || 0
+  min = min || 0;
   return Math.floor(Math.random() * (max - min) + min);
 }
 
@@ -54,20 +62,8 @@ function getRandomTitle() {
 }
 
 // Функция по созданию случайного типа аппартаментов
-// function getRandomType() {
-//   var typeArray = ['palace', 'flat', 'house', 'bungalo'];
-//   return typeArray[getRandomInteger(typeArray.length, 0)];
-// }
-
 function getRandomType() {
-  var typeArray = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
-  }
-
-  return Object.keys(typeArray).slice(getRandomInteger(Object.keys(typeArray).length));
+  return Object.keys(TypeArray)[getRandomInteger(Object.keys(TypeArray).length)];
 }
 
 // Функция по созданию случайного времени: Регистрация
@@ -106,7 +102,7 @@ function generateData() {
       y: getRandomInteger(MAX_COORDINATE_Y, MIN_COORDINATE_Y)
     };
 
-    data.push( {
+    data.push({
       author: {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
@@ -133,17 +129,6 @@ function generateData() {
 // Массив объектов
 var generatedObjects = generateData();
 
-
-// Путь к шаблону Пина
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
-var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-
-var pins = document.querySelector('.map__pins');
-
 // Функция создания пина
 function сreatePin(object) {
   var clonedPin = pinTemplate.cloneNode(true);
@@ -168,15 +153,6 @@ function createFragmentPins(array) {
   pins.appendChild(fragmentPin);
 }
 
-createFragmentPins(generatedObjects);
-
-
-// Путь к шаблону карточки
-var cardTemplate = document.querySelector('#card')
-  .content
-  .querySelector('.map__card');
-var mapFilters = document.querySelector('.map__filters-container');
-
 // Функция создания карточки
 function createCard(object) {
   var clonedCard = cardTemplate.cloneNode(true);
@@ -186,7 +162,7 @@ function createCard(object) {
   clonedCard.querySelector('.popup__text--price').textContent = object.offer.price + '₽/ночь';
 
 
-  clonedCard.querySelector('.popup__type').textContent = object.offer['type'];
+  clonedCard.querySelector('.popup__type').textContent = TypeArray[object.offer.type];
 
   clonedCard.querySelector('.popup__text--capacity').textContent = object.offer.rooms + ' комнаты для ' + object.offer.rooms + ' гостей.';
 
@@ -195,7 +171,7 @@ function createCard(object) {
   var popupFeaturesList = clonedCard.querySelector('.popup__features');
   popupFeaturesList.innerHTML = '';
 
-// Цикл по созданию элементов списка (features) в карточках
+  // Цикл по созданию элементов списка (features) в карточках
   if (object.offer.features.length) {
     for (var i = 0; i < object.offer.features.length; i++) {
       var featuresListItem = document.createElement('li');
@@ -211,7 +187,7 @@ function createCard(object) {
   var popupFeaturesPhotos = clonedCard.querySelector('.popup__photos');
   popupFeaturesPhotos.innerHTML = '';
 
-// Цикл по созданию фотографий в карточках
+  // Цикл по созданию фотографий в карточках
   for (var j = 0; j < object.offer.photos.length; j++) {
     var cardPhoto = document.createElement('img');
     cardPhoto.classList.add('popup__photo');
@@ -227,13 +203,31 @@ function createCard(object) {
   return clonedCard;
 }
 
-var card = createCard(generatedObjects[0]);
-
 // Функция добавления карточки в разметку
 function createFirstCard(object) {
   map.insertBefore(object, mapFilters);
-
 }
 
-createFirstCard(card);
+// Путь к шаблону Пина
+var map = document.querySelector('.map');
+map.classList.remove('map--faded');
 
+var pinTemplate = document.querySelector('#pin')
+  .content
+  .querySelector('.map__pin');
+
+var pins = document.querySelector('.map__pins');
+
+// Путь к шаблону карточки
+var cardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.map__card');
+var mapFilters = document.querySelector('.map__filters-container');
+
+
+// Получения первого объекта из сгенерированного массива
+var card = createCard(generatedObjects[0]);
+
+// Вызовы функций по созданию Пинов и Карточек
+createFragmentPins(generatedObjects);
+createFirstCard(card);
