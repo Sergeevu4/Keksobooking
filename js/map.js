@@ -210,7 +210,7 @@ function createFirstCard(object) {
 
 // Путь к шаблону Пина
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+// map.classList.remove('map--faded');
 
 var pinTemplate = document.querySelector('#pin')
   .content
@@ -222,12 +222,102 @@ var pins = document.querySelector('.map__pins');
 var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
-var mapFilters = document.querySelector('.map__filters-container');
 
+var mapFilters = document.querySelector('.map__filters-container');
 
 // Получения первого объекта из сгенерированного массива
 var card = createCard(generatedObjects[0]);
 
 // Вызовы функций по созданию Пинов и Карточек
-createFragmentPins(generatedObjects);
-createFirstCard(card);
+// createFragmentPins(generatedObjects);
+// createFirstCard(card);
+
+
+//****************************************************************************
+
+// Контейнер формы фильтрации
+var mapFilters = document.querySelector('.map__filters-container');
+
+// Форма фильтрации объявлений
+var formFiltersAds = mapFilters.querySelector('.map__filters');
+var formFiltersAdsSelect = formFiltersAds.querySelectorAll('select');
+// var formFiltersAdsSelect = document.querySelectorAll('select');
+
+// Все теги fieldset на стайте
+var formFieldset = document.querySelectorAll('fieldset');
+
+// Главный Pin
+var pinMain = document.querySelector('.map__pin--main');
+
+// Форма объявлений
+var formAds = document.querySelector('.ad-form');
+
+// Адрес в форме объявлений
+var addressFormAds = formAds.querySelector('#address');
+
+// var onPinMainMousemove = function(evt) {
+//   addressFormAds.value = evt.clientX + ',' + evt.clientY;
+// };
+
+
+// Первый вариант реализации
+
+// function toggleForms (array) {
+//   for (var i = 0; i < array.length; i++) {
+
+//   if (map.classList.contains('map--faded') || !array[i].disabled) {
+//     array[i].disabled = true;
+//   } else {
+//       array[i].disabled = false;
+//     }
+//   }
+// };
+
+
+// Второй  вариант реализации
+
+// function toggleForms (array) {
+//   for (var i = 0; i < array.length; i++) {
+
+//   if (map.classList.contains('map--faded')) {
+//       array[i].disabled = true;
+//     } else if (array[i].disabled) {
+//         array[i].disabled = false;
+//     } else {
+//         array[i].disabled = true;
+//     }
+//   }
+// };
+
+//Самый короткий вариант реализации функции переключения состояния элементов в форме
+
+function toggleForms (array) {
+  for (var i = 0; i < array.length; i++) {
+    array[i].disabled = true;
+
+    if (!map.classList.contains('map--faded') || !array[i].disabled) {
+        array[i].disabled = false;
+    }
+  }
+}
+
+// Вызов функции переключения состояния активности полей формы
+toggleForms(formFiltersAdsSelect);
+toggleForms(formFieldset);
+
+
+// Функция обработчик события по главному Pin
+pinMain.addEventListener('mouseup', function() {
+  map.classList.remove('map--faded');
+  formAds.classList.remove('ad-form--disabled');
+  createFragmentPins(generatedObjects);
+
+  toggleForms(formFiltersAdsSelect);
+  toggleForms(formFieldset);
+
+
+  pinMain.addEventListener('mousedown', function(evt) {
+    addressFormAds.value = evt.clientX + ',' + evt.clientY;
+  });
+});
+
