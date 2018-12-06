@@ -119,7 +119,8 @@ function generateData() {
         description: '',
         photos: (photosArray)
       },
-      location: location
+      location: location,
+      id: 'map__pin_id' + (i + 1)
     });
   }
 
@@ -136,6 +137,7 @@ function сreatePin(object) {
 
   clonedPinStyle.left = object.location.x - (SIZE_PIN_WIDTH / 2) + 'px';
   clonedPinStyle.top = object.location.y - SIZE_PIN_HEIGHT + 'px';
+  clonedPin.id = object.id;
   clonedPin.querySelector('img').src = object.author.avatar;
   clonedPin.querySelector('img').alt = object.offer.title;
 
@@ -143,14 +145,14 @@ function сreatePin(object) {
 }
 
 // Функция добавления пинов в разметку через фрагмент
-function createFragmentPins(array) {
+function addPins(array) {
   var fragmentPin = document.createDocumentFragment();
 
   for (var i = 0; i < array.length; i++) {
     fragmentPin.appendChild(сreatePin(array[i]));
   }
 
-  pins.appendChild(fragmentPin);
+  pinsContainerMap.appendChild(fragmentPin);
 }
 
 // Функция создания карточки
@@ -204,44 +206,43 @@ function createCard(object) {
 }
 
 // Функция добавления карточки в разметку
-function createFirstCard(object) {
+function addCard(object) {
   map.insertBefore(object, mapFilters);
 }
 
 // Путь к шаблону Пина
 var map = document.querySelector('.map');
-// map.classList.remove('map--faded');
 
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var pins = document.querySelector('.map__pins');
+// Контейнер Div Пинов на карте
+var pinsContainerMap = document.querySelector('.map__pins');
 
 // Путь к шаблону карточки
 var cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 
-var mapFilters = document.querySelector('.map__filters-container');
+// var mapFilters = document.querySelector('.map__filters-container');
 
 // Получения первого объекта из сгенерированного массива
-var card = createCard(generatedObjects[0]);
+// var card = createCard(generatedObjects[0]);
 
 // Вызовы функций по созданию Пинов и Карточек
 // createFragmentPins(generatedObjects);
 // createFirstCard(card);
 
 
-//****************************************************************************
+// ************************** ЗАДАНИЕ 4.1 ***********************************
 
 // Контейнер формы фильтрации
 var mapFilters = document.querySelector('.map__filters-container');
 
-// Форма фильтрации объявлений
+// Форма фильтрации объявлений (коллекция элементов формы)
 var formFiltersAds = mapFilters.querySelector('.map__filters');
 var formFiltersAdsSelect = formFiltersAds.querySelectorAll('select');
-// var formFiltersAdsSelect = document.querySelectorAll('select');
 
 // Все теги fieldset на стайте
 var formFieldset = document.querySelectorAll('fieldset');
@@ -249,54 +250,24 @@ var formFieldset = document.querySelectorAll('fieldset');
 // Главный Pin
 var pinMain = document.querySelector('.map__pin--main');
 
+// Все пины на карте (коллекция), кроме главного Пина
+// var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
 // Форма объявлений
 var formAds = document.querySelector('.ad-form');
 
 // Адрес в форме объявлений
 var addressFormAds = formAds.querySelector('#address');
-
-// var onPinMainMousemove = function(evt) {
-//   addressFormAds.value = evt.clientX + ',' + evt.clientY;
-// };
+addressFormAds.readOnly = true;
 
 
-// Первый вариант реализации
-
-// function toggleForms (array) {
-//   for (var i = 0; i < array.length; i++) {
-
-//   if (map.classList.contains('map--faded') || !array[i].disabled) {
-//     array[i].disabled = true;
-//   } else {
-//       array[i].disabled = false;
-//     }
-//   }
-// };
-
-
-// Второй  вариант реализации
-
-// function toggleForms (array) {
-//   for (var i = 0; i < array.length; i++) {
-
-//   if (map.classList.contains('map--faded')) {
-//       array[i].disabled = true;
-//     } else if (array[i].disabled) {
-//         array[i].disabled = false;
-//     } else {
-//         array[i].disabled = true;
-//     }
-//   }
-// };
-
-//Самый короткий вариант реализации функции переключения состояния элементов в форме
-
-function toggleForms (array) {
+// Самый короткий вариант реализации функции переключения состояния элементов в форме
+function toggleForms(array) {
   for (var i = 0; i < array.length; i++) {
     array[i].disabled = true;
 
     if (!map.classList.contains('map--faded') || !array[i].disabled) {
-        array[i].disabled = false;
+      array[i].disabled = false;
     }
   }
 }
@@ -305,19 +276,85 @@ function toggleForms (array) {
 toggleForms(formFiltersAdsSelect);
 toggleForms(formFieldset);
 
+// Высота острия главного пина
+var PIN_MAIN_HEIGHT = 19;
 
-// Функция обработчик события по главному Pin
-pinMain.addEventListener('mouseup', function() {
+// Функция подсчета координат для Основного пина
+function getCoordinates() {
+  var coordinates = {
+    x: parseInt(pinMain.style.left, 10) + pinMain.offsetWidth / 2,
+    y: parseInt(pinMain.style.top, 10) + pinMain.offsetHeight / 2
+  };
+
+  if (!map.classList.contains('map--faded')) {
+    coordinates.y = parseInt(pinMain.style.top, 10) + pinMain.offsetHeight + PIN_MAIN_HEIGHT;
+  }
+
+  return coordinates;
+}
+
+// Объект с координатами
+var coords = getCoordinates();
+
+// Функция внесения координат в адрес input
+function getАddressFormAds(object) {
+  addressFormAds.value = (object.x + ',' + object.y);
+}
+getАddressFormAds(coords);
+
+// Все пины на карте (коллекция), кроме главного Пина
+// var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+// Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
+function onPinClick(evt) {
+  var pinsClick = evt.target.closest('.map__pin:not(.map__pin--main)');
+
+  if (pinsClick) {
+    var currentInfo = generatedObjects.filter(function (item) {
+      return item.id === pinsClick.id;
+    });
+
+    // Закрытие перед отрисовкой
+    closeCard();
+
+    // Отрисовка
+    addCard(createCard(currentInfo[0]));
+
+    // Закрытие карточки по кнопке
+    var closeCardButton = document.querySelector('.popup__close');
+    closeCardButton.addEventListener('click', closeCard);
+  }
+}
+
+// Функция закрытия карточек + Проверка существует ли она вообще, перед закрытием
+function closeCard() {
+  var card = document.querySelector('.map__card');
+  if (card) {
+    map.removeChild(document.querySelector('.map__card'));
+  }
+}
+
+// Функция обработчика нажатия по Escape
+function onEscPress(evt) {
+  if (evt.code === 'Escape') {
+    closeCard();
+  }
+}
+
+// Обработчик события по главному Pin
+pinMain.addEventListener('mouseup', function () {
   map.classList.remove('map--faded');
   formAds.classList.remove('ad-form--disabled');
-  createFragmentPins(generatedObjects);
+  getАddressFormAds(getCoordinates());
+  addPins(generatedObjects);
 
   toggleForms(formFiltersAdsSelect);
   toggleForms(formFieldset);
 
-
-  pinMain.addEventListener('mousedown', function(evt) {
-    addressFormAds.value = evt.clientX + ',' + evt.clientY;
-  });
+  setTimeout(function () {
+    pinsContainerMap.addEventListener('click', onPinClick);
+  }, 0);
 });
 
+// Обработчик события клика и последующего закрытия карточки
+document.addEventListener('keydown', onEscPress);
