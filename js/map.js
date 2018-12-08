@@ -258,7 +258,7 @@ var formAds = document.querySelector('.ad-form');
 
 // Адрес в форме объявлений
 var addressFormAds = formAds.querySelector('#address');
-addressFormAds.readOnly = true;
+// addressFormAds.readOnly = true;
 
 
 // Самый короткий вариант реализации функции переключения состояния элементов в форме
@@ -300,6 +300,7 @@ var coords = getCoordinates();
 function getАddressFormAds(object) {
   addressFormAds.value = (object.x + ',' + object.y);
 }
+
 getАddressFormAds(coords);
 
 // Все пины на карте (коллекция), кроме главного Пина
@@ -341,8 +342,8 @@ function onEscPress(evt) {
   }
 }
 
-// Обработчик события по главному Pin
-pinMain.addEventListener('mouseup', function () {
+// Функция обработчика нажатия на главный Pin
+function onPinMainMouseUp() {
   map.classList.remove('map--faded');
   formAds.classList.remove('ad-form--disabled');
   getАddressFormAds(getCoordinates());
@@ -354,7 +355,130 @@ pinMain.addEventListener('mouseup', function () {
   setTimeout(function () {
     pinsContainerMap.addEventListener('click', onPinClick);
   }, 0);
-});
+}
+
+// Обработчик события по главному Pin
+pinMain.addEventListener('mouseup', onPinMainMouseUp);
+
 
 // Обработчик события клика и последующего закрытия карточки
 document.addEventListener('keydown', onEscPress);
+
+// ************************Задание 4.2**************************************
+
+// Поля формы в HTML тип апартаментов и цена
+var typeApartmentAds = formAds.querySelector('#type');
+var priceApartmentAds = formAds.querySelector('#price');
+
+// Объект тип апартаментов и цена
+var TypePrice = {
+  BUNGALO: 0,
+  FLAT: 1000,
+  HOUSE: 5000,
+  PALACE: 10000
+};
+
+// Функция обработчика событий синхронизация полей(тип апартаментов и цены)
+function onTypeApartmentAdsChange() {
+  var currentTypeApartment = typeApartmentAds.value.toUpperCase();
+  var currentMinPrice = TypePrice[currentTypeApartment];
+  priceApartmentAds.placeholder = currentMinPrice;
+  priceApartmentAds.min = currentMinPrice;
+}
+
+// Обработчик события изменению в поле формы: Тип апартаментов
+typeApartmentAds.addEventListener('change', onTypeApartmentAdsChange);
+
+
+// Поля формы время заезда и время выезда
+var timeInApartmentAds = formAds.querySelector('#timein');
+var timeOutApartmentAds = formAds.querySelector('#timeout');
+
+
+// Функция обработчика событий синхронизация полей(время выезда = времени въезда)
+function onTimeInApartmentAdsСhange() {
+  timeOutApartmentAds.value = timeInApartmentAds.value;
+}
+
+// Функция обработчика событий синхронизация полей(время въезда = времени въезда)
+function onTimeOutApartmentAdsСhange() {
+  timeInApartmentAds.value = timeOutApartmentAds.value;
+}
+
+// Обработчики события по изменению в поле формы: время заезда, время выезда
+timeInApartmentAds.addEventListener('change', onTimeInApartmentAdsСhange);
+timeOutApartmentAds.addEventListener('change', onTimeOutApartmentAdsСhange);
+
+
+// Поля формы Кол-во комнат и Кол-во мест
+var roomApartmentAds = formAds.querySelector('#room_number');
+var capacityApartmentAds = formAds.querySelector('#capacity');
+
+var TARGET_INDEX = 0;
+
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
+function onRoomApartmentAdsСhange() {
+  if (capacityApartmentAds.options.length > TARGET_INDEX) {
+    [].forEach.call(capacityApartmentAds.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomApartmentAds.value][TARGET_INDEX] === item.value) ? true : false;
+      item.hidden = (ROOMS_CAPACITY[roomApartmentAds.value].indexOf(item.value) >= TARGET_INDEX) ? false : true;
+    });
+  }
+}
+
+roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
+
+
+// // Поля формы Кол-во комнат и Кол-во мест
+// var roomApartmentAds = formAds.querySelector('#room_number');
+// var capacityApartmentAds = formAds.querySelector('#capacity');
+
+
+// function onRoomApartmentAdsСhange(evt) {
+//   var curentRoomApartment = parseInt(roomApartmentAds.value, 10);
+//   var curentCapacityApartment = parseInt(capacityApartmentAds.value, 10);
+//   var errorMessage = capacityApartmentAds.setCustomValidity('');
+
+//   switch (curentRoomApartment) {
+//     case 1:
+//       if (curentRoomApartment !== curentCapacityApartment) {
+//       errorMessage = 'Сообщение об ошибке 1';
+//       // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 1');
+//    }
+//     break;
+
+//     case 2:
+//       if (curentCapacityApartment > 2 || curentCapacityApartment < 1) {
+//         errorMessage = 'Сообщение об ошибке 2';
+//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 2');
+//      }
+//       break;
+
+//     case 3:
+//       if (curentCapacityApartment > 3 || curentCapacityApartment < 1 ) {
+//         errorMessage = 'Сообщение об ошибке 3';
+//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 3');
+//      }
+//     break;
+
+//     case 100:
+//       if (curentCapacityApartment !== 0) {
+//         errorMessage = 'Сообщение об ошибке 4';
+//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 4');
+//      }
+//     break;
+
+//     default:
+//     errorMessage = '';
+//     break;
+//   }
+//   capacityApartmentAds.setCustomValidity(errorMessage);
+// }
+
+// roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
