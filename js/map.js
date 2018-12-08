@@ -364,10 +364,10 @@ pinMain.addEventListener('mouseup', onPinMainMouseUp);
 // Обработчик события клика и последующего закрытия карточки
 document.addEventListener('keydown', onEscPress);
 
-//************************Задание 4.2**************************************
+// ************************Задание 4.2**************************************
 
 // Поля формы в HTML тип апартаментов и цена
-var typeApartmentAds  = formAds.querySelector('#type');
+var typeApartmentAds = formAds.querySelector('#type');
 var priceApartmentAds = formAds.querySelector('#price');
 
 // Объект тип апартаментов и цена
@@ -423,14 +423,14 @@ var ROOMS_CAPACITY = {
   '100': ['0']
 };
 
- function onRoomApartmentAdsСhange () {
+function onRoomApartmentAdsСhange() {
   if (capacityApartmentAds.options.length > TARGET_INDEX) {
     [].forEach.call(capacityApartmentAds.options, function (item) {
       item.selected = (ROOMS_CAPACITY[roomApartmentAds.value][TARGET_INDEX] === item.value) ? true : false;
       item.hidden = (ROOMS_CAPACITY[roomApartmentAds.value].indexOf(item.value) >= TARGET_INDEX) ? false : true;
     });
   }
-};
+}
 
 roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
 
@@ -482,77 +482,3 @@ roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
 // }
 
 // roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// var array1 = ["1", "2", "3", "100"];
-// var array1 = ["3", "2", "1", "0"];
-
-
-// array1[0] !== array2[2]
-// array1[1] !== array2[1, 2]
-// array1[2] !== array2[0, 1, 2]
-// array1[3] !== array2[3]
-
-
-
-  // if (curentRoomApartment !== curentCapacityApartment) {
-  //   capacityApartmentAds.setCustomValidity('Число комнат не совпадает с числом жильцов');
-  // } else if (curentRoomApartment !== (curentCapacityApartment > 2 || curentCapacityApartment))
-
-
-
-// } else if (userNameInput.validity.tooLong) {
-//   roomApartmentAds.setCustomValidity('Имя не должно превышать 25-ти символов');
-// } else if (userNameInput.validity.valueMissing) {
-//   roomApartmentAds.setCustomValidity('Обязательное поле');
-// } else {
-//   roomApartmentAds.setCustomValidity('');
-
-
-
-// var TYPE_AND_PRICE = {
-//   'flat': 1000,
-//   'bungalo': 0,
-//   'house': 5000,
-//   'palace': 10000
-// };
-
-// var typeHousing = noticeForm.querySelector('#type');
-// var price = noticeForm.querySelector('#price');
-
-
-// var onClickHousingSync = function () {
-//   window.synchronizeFields(typeHousing, price, Object.keys(TYPE_AND_PRICE), Object.values(TYPE_AND_PRICE), syncValueWithMin);
-// };
