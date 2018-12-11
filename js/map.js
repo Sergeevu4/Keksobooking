@@ -366,55 +366,7 @@ document.addEventListener('keydown', onEscPress);
 
 // ******************************** 5.1 *************************************
 
-
-var startCoords = {};
-
-// (Handler) Функция обработчика события mousemove
-function onPinMainMouseMove(evt) {
-  evt.preventDefault();
-
-  var shift = {
-   x: evt.clientX - startCoords.x ,
-   y: evt.clientY - startCoords.y
-  };
-
-  startCoords = {
-   x: evt.clientX,
-   y: evt.clientY
-  };
-
-  // getАddressFormAds(startCoords);
-
-  pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
-  pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
-};
-
-// (Handler) Функция обработчика события mouseup
-function onPinMainMouseUp(evt) {
-  evt.preventDefault();
-
-  document.removeEventListener('mousemove', onPinMainMouseMove);
-  document.removeEventListener('mouseup', onPinMainMouseUp);
-};
-
-
-pinMain.addEventListener('mousedown', function (evt) {
-  evt.preventDefault();
-
-  var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
-  };
-
-  document.addEventListener('mousemove', onPinMainMouseMove);
-  document.addEventListener('mouseup', onPinMainMouseUp);
-});
-
-
-
-
-
-
+// var startCoords = {};
 
 // // (Handler) Функция обработчика события mousemove
 // function onPinMainMouseMove(evt) {
@@ -430,7 +382,7 @@ pinMain.addEventListener('mousedown', function (evt) {
 //    y: evt.clientY
 //   };
 
-//   getАddressFormAds(startCoords);
+//   // getАddressFormAds(startCoords);
 
 //   pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
 //   pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
@@ -457,6 +409,57 @@ pinMain.addEventListener('mousedown', function (evt) {
 //   document.addEventListener('mouseup', onPinMainMouseUp);
 // });
 
+
+
+pinMain.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  map.classList.remove('map--faded');
+  formAds.classList.remove('ad-form--disabled');
+  getАddressFormAds(getCoordinates());
+
+  if (!map.classList.contains('map--faded')) {
+    addPins(generatedObjects);
+  }
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onPinMainMouseMove = function (moveEvt) {
+     moveEvt.preventDefault();
+
+     var shift = {
+       x: moveEvt.clientX - startCoords.x ,
+       y: moveEvt.clientY - startCoords.y
+     };
+
+     startCoords = {
+       x: moveEvt.clientX,
+       y: moveEvt.clientY
+     };
+
+      getАddressFormAds(startCoords);
+
+     pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
+     pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
+  };
+
+    var onPinMainMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      setTimeout(function () {
+        pinsContainerMap.addEventListener('click', onPinClick);
+      }, 0);
+
+      document.removeEventListener('mousemove', onPinMainMouseMove);
+      document.removeEventListener('mouseup', onPinMainMouseUp);
+   };
+
+  document.addEventListener('mousemove', onPinMainMouseMove);
+  document.addEventListener('mouseup', onPinMainMouseUp);
+});
 
 
 
