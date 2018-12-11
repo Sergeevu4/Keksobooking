@@ -296,17 +296,15 @@ function getCoordinates() {
 // Объект с координатами
 var coords = getCoordinates();
 
-// Функция внесения координат в адрес input
+// (Handler) Функция внесения координат в адрес input
 function getАddressFormAds(object) {
   addressFormAds.value = (object.x + ',' + object.y);
 }
 
 getАddressFormAds(coords);
 
-// Все пины на карте (коллекция), кроме главного Пина
-// var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-// Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
+//(Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
 function onPinClick(evt) {
   var pinsClick = evt.target.closest('.map__pin:not(.map__pin--main)');
 
@@ -335,7 +333,7 @@ function closeCard() {
   }
 }
 
-// Функция обработчика нажатия по Escape
+// (Handler) Функция обработчика нажатия по Escape
 function onEscPress(evt) {
   if (evt.code === 'Escape') {
     closeCard();
@@ -343,26 +341,125 @@ function onEscPress(evt) {
 }
 
 // Функция обработчика нажатия на главный Pin
-function onPinMainMouseUp() {
-  map.classList.remove('map--faded');
-  formAds.classList.remove('ad-form--disabled');
-  getАddressFormAds(getCoordinates());
-  addPins(generatedObjects);
+// function onPinMainMouseUp() {
+//   map.classList.remove('map--faded');
+//   formAds.classList.remove('ad-form--disabled');
+//   getАddressFormAds(getCoordinates());
+//   addPins(generatedObjects);
 
-  toggleForms(formFiltersAdsSelect);
-  toggleForms(formFieldset);
+//   toggleForms(formFiltersAdsSelect);
+//   toggleForms(formFieldset);
 
-  setTimeout(function () {
-    pinsContainerMap.addEventListener('click', onPinClick);
-  }, 0);
-}
+//   setTimeout(function () {
+//     pinsContainerMap.addEventListener('click', onPinClick);
+//   }, 0);
+// }
+
 
 // Обработчик события по главному Pin
-pinMain.addEventListener('mouseup', onPinMainMouseUp);
+// pinMain.addEventListener('mouseup', onPinMainMouseUp);
 
 
 // Обработчик события клика и последующего закрытия карточки
 document.addEventListener('keydown', onEscPress);
+
+
+// ******************************** 5.1 *************************************
+
+
+var startCoords = {};
+
+// (Handler) Функция обработчика события mousemove
+function onPinMainMouseMove(evt) {
+  evt.preventDefault();
+
+  var shift = {
+   x: evt.clientX - startCoords.x ,
+   y: evt.clientY - startCoords.y
+  };
+
+  startCoords = {
+   x: evt.clientX,
+   y: evt.clientY
+  };
+
+  // getАddressFormAds(startCoords);
+
+  pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
+  pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
+};
+
+// (Handler) Функция обработчика события mouseup
+function onPinMainMouseUp(evt) {
+  evt.preventDefault();
+
+  document.removeEventListener('mousemove', onPinMainMouseMove);
+  document.removeEventListener('mouseup', onPinMainMouseUp);
+};
+
+
+pinMain.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  document.addEventListener('mousemove', onPinMainMouseMove);
+  document.addEventListener('mouseup', onPinMainMouseUp);
+});
+
+
+
+
+
+
+
+// // (Handler) Функция обработчика события mousemove
+// function onPinMainMouseMove(evt) {
+//   evt.preventDefault();
+
+//   var shift = {
+//    x: evt.clientX - startCoords.x ,
+//    y: evt.clientY - startCoords.y
+//   };
+
+//   startCoords = {
+//    x: evt.clientX,
+//    y: evt.clientY
+//   };
+
+//   getАddressFormAds(startCoords);
+
+//   pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
+//   pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
+// };
+
+// // (Handler) Функция обработчика события mouseup
+// function onPinMainMouseUp(evt) {
+//   evt.preventDefault();
+
+//   document.removeEventListener('mousemove', onPinMainMouseMove);
+//   document.removeEventListener('mouseup', onPinMainMouseUp);
+// };
+
+
+// pinMain.addEventListener('mousedown', function (evt) {
+//   evt.preventDefault();
+
+//   var startCoords = {
+//     x: evt.clientX,
+//     y: evt.clientY
+//   };
+
+//   document.addEventListener('mousemove', onPinMainMouseMove);
+//   document.addEventListener('mouseup', onPinMainMouseUp);
+// });
+
+
+
+
 
 // ************************Задание 4.2**************************************
 
@@ -433,52 +530,3 @@ function onRoomApartmentAdsСhange() {
 }
 
 roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
-
-
-// // Поля формы Кол-во комнат и Кол-во мест
-// var roomApartmentAds = formAds.querySelector('#room_number');
-// var capacityApartmentAds = formAds.querySelector('#capacity');
-
-
-// function onRoomApartmentAdsСhange(evt) {
-//   var curentRoomApartment = parseInt(roomApartmentAds.value, 10);
-//   var curentCapacityApartment = parseInt(capacityApartmentAds.value, 10);
-//   var errorMessage = capacityApartmentAds.setCustomValidity('');
-
-//   switch (curentRoomApartment) {
-//     case 1:
-//       if (curentRoomApartment !== curentCapacityApartment) {
-//       errorMessage = 'Сообщение об ошибке 1';
-//       // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 1');
-//    }
-//     break;
-
-//     case 2:
-//       if (curentCapacityApartment > 2 || curentCapacityApartment < 1) {
-//         errorMessage = 'Сообщение об ошибке 2';
-//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 2');
-//      }
-//       break;
-
-//     case 3:
-//       if (curentCapacityApartment > 3 || curentCapacityApartment < 1 ) {
-//         errorMessage = 'Сообщение об ошибке 3';
-//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 3');
-//      }
-//     break;
-
-//     case 100:
-//       if (curentCapacityApartment !== 0) {
-//         errorMessage = 'Сообщение об ошибке 4';
-//         // capacityApartmentAds.setCustomValidity('Сообщение об ошибке 4');
-//      }
-//     break;
-
-//     default:
-//     errorMessage = '';
-//     break;
-//   }
-//   capacityApartmentAds.setCustomValidity(errorMessage);
-// }
-
-// roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
