@@ -250,6 +250,7 @@ var formFieldset = document.querySelectorAll('fieldset');
 // Главный Pin
 var pinMain = document.querySelector('.map__pin--main');
 
+
 // Все пины на карте (коллекция), кроме главного Пина
 // var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
@@ -294,19 +295,22 @@ function getCoordinates() {
 }
 
 // Объект с координатами
-var coords = getCoordinates();
+// var coords = getCoordinates();
+writeАddressFormAds(getCoordinates());
 
 // (Handler) Функция внесения координат в адрес input
-function getАddressFormAds(object) {
+function writeАddressFormAds(object) {
   addressFormAds.value = (object.x + ',' + object.y);
 }
 
-getАddressFormAds(coords);
 
-
-//(Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
+// (Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
 function onPinClick(evt) {
   var pinsClick = evt.target.closest('.map__pin:not(.map__pin--main)');
+
+  if (evt.target.classList.contains('.map__pin:not(.map__pin--main)')) {
+    return;
+  }
 
   if (pinsClick) {
     var currentInfo = generatedObjects.filter(function (item) {
@@ -340,128 +344,85 @@ function onEscPress(evt) {
   }
 }
 
-// Функция обработчика нажатия на главный Pin
-// function onPinMainMouseUp() {
-//   map.classList.remove('map--faded');
-//   formAds.classList.remove('ad-form--disabled');
-//   getАddressFormAds(getCoordinates());
-//   addPins(generatedObjects);
-
-//   toggleForms(formFiltersAdsSelect);
-//   toggleForms(formFieldset);
-
-//   setTimeout(function () {
-//     pinsContainerMap.addEventListener('click', onPinClick);
-//   }, 0);
-// }
-
-
-// Обработчик события по главному Pin
-// pinMain.addEventListener('mouseup', onPinMainMouseUp);
-
-
 // Обработчик события клика и последующего закрытия карточки
 document.addEventListener('keydown', onEscPress);
 
-
 // ******************************** 5.1 *************************************
+pinMain.style.zIndex = '1000';
 
-// var startCoords = {};
+var MIN_SHIFT_TOP = 130;
+var MAX_SHIFT_TOP = 630;
 
-// // (Handler) Функция обработчика события mousemove
-// function onPinMainMouseMove(evt) {
-//   evt.preventDefault();
+var MIN_SHIFT_LEFT = 0;
+var MAX_SHIFT_LEFT = 1200;
 
-//   var shift = {
-//    x: evt.clientX - startCoords.x ,
-//    y: evt.clientY - startCoords.y
-//   };
+var startCoords = {};
 
-//   startCoords = {
-//    x: evt.clientX,
-//    y: evt.clientY
-//   };
-
-//   // getАddressFormAds(startCoords);
-
-//   pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
-//   pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
-// };
-
-// // (Handler) Функция обработчика события mouseup
-// function onPinMainMouseUp(evt) {
-//   evt.preventDefault();
-
-//   document.removeEventListener('mousemove', onPinMainMouseMove);
-//   document.removeEventListener('mouseup', onPinMainMouseUp);
-// };
-
-
-// pinMain.addEventListener('mousedown', function (evt) {
-//   evt.preventDefault();
-
-//   var startCoords = {
-//     x: evt.clientX,
-//     y: evt.clientY
-//   };
-
-//   document.addEventListener('mousemove', onPinMainMouseMove);
-//   document.addEventListener('mouseup', onPinMainMouseUp);
-// });
-
-
-
-pinMain.addEventListener('mousedown', function (evt) {
+// (Handler) Функция обработчика события mousemove
+function onPinMainMouseMove(evt) {
   evt.preventDefault();
 
-  map.classList.remove('map--faded');
-  formAds.classList.remove('ad-form--disabled');
-  getАddressFormAds(getCoordinates());
+  writeАddressFormAds(getCoordinates());
 
-  if (!map.classList.contains('map--faded')) {
-    addPins(generatedObjects);
-  }
+  var shift = {
+    x: evt.clientX - startCoords.x,
+    y: evt.clientY - startCoords.y
+  };
 
-  var startCoords = {
+  startCoords = {
     x: evt.clientX,
     y: evt.clientY
   };
 
-  var onPinMainMouseMove = function (moveEvt) {
-     moveEvt.preventDefault();
+  pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
+  pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
 
-     var shift = {
-       x: moveEvt.clientX - startCoords.x ,
-       y: moveEvt.clientY - startCoords.y
-     };
+  if (pinMain.offsetTop + shift.y > MAX_SHIFT_TOP - PIN_MAIN_HEIGHT) {
+    pinMain.style.top = (MAX_SHIFT_TOP - PIN_MAIN_HEIGHT) + 'px';
+  }
 
-     startCoords = {
-       x: moveEvt.clientX,
-       y: moveEvt.clientY
-     };
+  if (pinMain.offsetTop + shift.y < MIN_SHIFT_TOP) {
+    pinMain.style.top = MIN_SHIFT_TOP + 'px';
+  }
 
-      getАddressFormAds(startCoords);
+  if (pinMain.offsetLeft + shift.x < (MIN_SHIFT_LEFT - pinMain.offsetWidth / 2)) {
+    pinMain.style.left = (MIN_SHIFT_LEFT - pinMain.offsetWidth / 2) + 'px';
+  }
 
-     pinMain.style.top = (pinMain.offsetTop + shift.y) + 'px';
-     pinMain.style.left = (pinMain.offsetLeft + shift.x) + 'px';
+  if (pinMain.offsetLeft + shift.x > (MAX_SHIFT_LEFT - pinMain.offsetWidth / 2)) {
+    pinMain.style.left = (MAX_SHIFT_LEFT - pinMain.offsetWidth / 2) + 'px';
+  }
+}
+
+// (Handler) Функция обработчика события mouseup
+function onPinMainMouseUp(evt) {
+  evt.preventDefault();
+
+  if (map.classList.contains('map--faded')) {
+    addPins(generatedObjects);
+    map.classList.remove('map--faded');
+    formAds.classList.remove('ad-form--disabled');
+    writeАddressFormAds(getCoordinates());
+  }
+
+  pinsContainerMap.addEventListener('click', onPinClick);
+
+  document.removeEventListener('mousemove', onPinMainMouseMove);
+  document.removeEventListener('mouseup', onPinMainMouseUp);
+}
+
+// Обработчик Drag'n'Drop
+pinMain.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
   };
-
-    var onPinMainMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-
-      setTimeout(function () {
-        pinsContainerMap.addEventListener('click', onPinClick);
-      }, 0);
-
-      document.removeEventListener('mousemove', onPinMainMouseMove);
-      document.removeEventListener('mouseup', onPinMainMouseUp);
-   };
 
   document.addEventListener('mousemove', onPinMainMouseMove);
   document.addEventListener('mouseup', onPinMainMouseUp);
 });
-
-
 
 
 // ************************Задание 4.2**************************************
