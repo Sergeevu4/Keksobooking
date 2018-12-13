@@ -1,17 +1,17 @@
 'use strict';
 
-// Колличество создаваемых объектов, внутри массива
+// Количество создаваемых объектов, внутри массива
 var NUMBER_CREATED_OBJECTS = 8;
 
 // Цена: минимальное, максимальное значение
 var MIN_PRICE = 1000;
 var MAX_PRICE = 1000000;
 
-// Колличество комнат: минимальное, максимальное значение
+// Количество комнат: минимальное, максимальное значение
 var MIN_ROOMS = 1;
 var MAX_ROOMS = 5;
 
-// Колличество гостей: минимальное, максимальное значение
+// Количество гостей: минимальное, максимальное значение
 var MIN_GUESTS = 1;
 var MAX_GUESTS = 3;
 
@@ -30,7 +30,7 @@ var MAX_COORDINATE_X = 1200;
 var MIN_COORDINATE_Y = 130;
 var MAX_COORDINATE_Y = 630;
 
-// Перечисление объектов: типы аппартаментов
+// Перечисление объектов: типы апартаментов
 var TypeArray = {
   PALACE: 'Дворец',
   FLAT: 'Квартира',
@@ -61,7 +61,7 @@ function getRandomTitle() {
   return titleArray[getRandomInteger(titleArray.length, 0)];
 }
 
-// Функция по созданию случайного типа аппартаментов
+// Функция по созданию случайного типа апартаментов
 function getRandomType() {
   return Object.keys(TypeArray)[getRandomInteger(Object.keys(TypeArray).length)];
 }
@@ -403,6 +403,9 @@ function onPinMainMouseUp(evt) {
     map.classList.remove('map--faded');
     formAds.classList.remove('ad-form--disabled');
     writeАddressFormAds(getCoordinates());
+
+    toggleForms(formFiltersAdsSelect);
+    toggleForms(formFieldset);
   }
 
   pinsContainerMap.addEventListener('click', onPinClick);
@@ -494,3 +497,5 @@ function onRoomApartmentAdsСhange() {
 }
 
 roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
+
+
