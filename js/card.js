@@ -11,12 +11,6 @@
   .content
   .querySelector('.map__card');
 
-  // Путь к главному пространству - карта(section)
-  var map = document.querySelector('.map');
-
-  // Контейнер формы фильтрации
-  var mapFilters = document.querySelector('.map__filters-container');
-
   // Функция создания карточки
   function createCard(object) {
     var clonedCard = cardTemplate.cloneNode(true);
@@ -67,14 +61,8 @@
     return clonedCard;
   }
 
-  // Функция добавления карточки в разметку
-  function addCard(object) {
-    map.insertBefore(object, mapFilters);
-  }
-
   // Экспорт
   window.card = {
-    createCard: createCard,
-    addCard: addCard
+    create: createCard
   };
 })();
