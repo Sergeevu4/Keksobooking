@@ -11,9 +11,6 @@
   .content
   .querySelector('.map__pin');
 
-  // Контейнер Div Пинов на карте
-  var pinsContainerMap = document.querySelector('.map__pins');
-
   // Функция создания пина
   function сreatePin(object) {
     var clonedPin = pinTemplate.cloneNode(true);
@@ -28,19 +25,8 @@
     return clonedPin;
   }
 
-  // Функция добавления пинов в разметку через фрагмент
-  function addPins(array) {
-    var fragmentPin = document.createDocumentFragment();
-
-    for (var i = 0; i < array.length; i++) {
-      fragmentPin.appendChild(сreatePin(array[i]));
-    }
-
-    pinsContainerMap.appendChild(fragmentPin);
-  }
-
   // Экспорт
   window.pin = {
-    addPins: addPins
+    сreate: сreatePin
   };
 })();
