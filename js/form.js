@@ -31,8 +31,8 @@
   var formAds = document.querySelector('.ad-form');
 
   // Адрес в форме объявлений
-  // var addressFormAds = formAds.querySelector('#address');
-  // addressFormAds.readOnly = true;
+  var addressFormAds = formAds.querySelector('#address');
+  addressFormAds.readOnly = true;
 
   // Поля формы в HTML тип апартаментов и цена
   var typeApartmentAds = formAds.querySelector('#type');
@@ -109,9 +109,20 @@
   // Обработчики события по изменению в поле формы: «Количество комнат» синхронизировано с полем «Количество мест»
   roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
 
+  // Функция внесения координат в адрес input
+  function writeАddressFormAds(object) {
+    addressFormAds.value = (object.x + ',' + object.y);
+  }
+
+  // Объект с координатами
+  // Импорт window.map
+  writeАddressFormAds(window.map.getCoordinates());
+
+
   // Экспорт
   window.form = {
-    toggleForms: toggleForms
+    toggleForms: toggleForms,
+    writeАddressFormAds: writeАddressFormAds
   };
 
 })();
