@@ -1,52 +1,70 @@
 'use strict';
+
 (function () {
+  // Высота острия главного пина +
+  var PIN_MAIN_HEIGHT_POINTER = 19;
 
-  // Форма объявлений +
-  var formAds = document.querySelector('.ad-form');
+  // // Форма объявлений +
+  // var formAds = document.querySelector('.ad-form');
 
-  // Адрес в форме объявлений +
-  var addressFormAds = formAds.querySelector('#address');
-  // addressFormAds.readOnly = true;
+  // // Адрес в форме объявлений +
+  // var addressFormAds = formAds.querySelector('#address');
 
   // Путь к главному пространству - карта(section) ++
   var map = document.querySelector('.map');
 
-  // Высота острия главного пина +
-  var PIN_MAIN_HEIGHT = 19;
+  // Контейнер формы фильтрации
+  var mapFilters = document.querySelector('.map__filters-container');
 
   // Главный Pin +
   var pinMain = document.querySelector('.map__pin--main');
 
+  // Контейнер Div Пинов на карте
+  var pinsContainerMap = document.querySelector('.map__pins');
+
+  // Функция добавления пинов в разметку через фрагмент
+  // Экспорт  window.pin
+  function addPins(array) {
+    var fragmentPin = document.createDocumentFragment();
+
+    for (var i = 0; i < array.length; i++) {
+      fragmentPin.appendChild(window.pin.сreate(array[i]));
+    }
+
+    pinsContainerMap.appendChild(fragmentPin);
+  }
+
+  // Функция добавления карточки в разметку
+  function addCard(object) {
+    map.insertBefore(object, mapFilters);
+  }
 
   // Функция подсчета координат для Основного пина
   function getCoordinates() {
     var coordinates = {
-      x: parseInt(pinMain.style.left, 10) + pinMain.offsetWidth / 2,
-      y: parseInt(pinMain.style.top, 10) + pinMain.offsetHeight / 2
+      x: parseInt(pinMain.style.left, 10) + Math.round(pinMain.offsetWidth / 2),
+      y: parseInt(pinMain.style.top, 10) + Math.round(pinMain.offsetHeight / 2)
     };
 
     if (!map.classList.contains('map--faded')) {
-      coordinates.y = parseInt(pinMain.style.top, 10) + pinMain.offsetHeight + PIN_MAIN_HEIGHT;
+      coordinates.y = parseInt(pinMain.style.top, 10) + pinMain.offsetHeight + PIN_MAIN_HEIGHT_POINTER;
     }
 
     return coordinates;
   }
 
   // Объект с координатами
-  writeАddressFormAds(getCoordinates());
+  // Импорт window.form
 
-  // (Handler) Функция внесения координат в адрес input
-  function writeАddressFormAds(object) {
-    addressFormAds.value = (object.x + ',' + object.y);
-  }
+  // // (Handler) Функция внесения координат в адрес input
+  // function writeАddressFormAds(object) {
+  //   addressFormAds.value = (object.x + ',' + object.y);
+  // }
+
 
   // (Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
   function onPinClick(evt) {
     var pinsClick = evt.target.closest('.map__pin:not(.map__pin--main)');
-
-    if (evt.target.classList.contains('.map__pin:not(.map__pin--main)')) {
-      return;
-    }
 
     if (pinsClick) {
       // Импорт с data -  window.data
@@ -54,12 +72,13 @@
         return item.id === pinsClick.id;
       });
 
+      // window.data.generatedObjects.filter().[i]
       // Закрытие перед отрисовкой
       closeCard();
 
       // Отрисовка
       // Импорт window.card
-      window.card.addCard(window.card.createCard(currentInfo[0]));
+      addCard(window.card.create(currentInfo[0]));
 
       // Закрытие карточки по кнопке
       var closeCardButton = document.querySelector('.popup__close');
@@ -87,9 +106,10 @@
 
   // Экспорт
   window.map = {
+    addPins: addPins,
     getCoordinates: getCoordinates,
-    writeАddressFormAds: writeАddressFormAds,
     onPinClick: onPinClick
+
   };
 
 })();
