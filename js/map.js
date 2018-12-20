@@ -4,12 +4,6 @@
   // Высота острия главного пина +
   var PIN_MAIN_HEIGHT_POINTER = 19;
 
-  // // Форма объявлений +
-  // var formAds = document.querySelector('.ad-form');
-
-  // // Адрес в форме объявлений +
-  // var addressFormAds = formAds.querySelector('#address');
-
   // Путь к главному пространству - карта(section) ++
   var map = document.querySelector('.map');
 
