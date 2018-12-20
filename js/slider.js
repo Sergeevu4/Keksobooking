@@ -15,7 +15,7 @@
 
   // Главный Pin
   var pinMain = document.querySelector('.map__pin--main');
-  pinMain.style.zIndex = '1000';
+  // pinMain.style.zIndex = '1000';
 
   /*  // Путь к главному пространству - карта(section) ++
   var map = document.querySelector('.map');
