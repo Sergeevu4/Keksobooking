@@ -124,12 +124,47 @@
   // Обработчик события клика и последующего закрытия карточки
   document.addEventListener('keydown', onEscPress);
 
+
+  // Объект с записанными первоначальными координатами для последующего возврата Главного пина
+  var MAIN_PIN_INITIAL_POSITION = {
+    // left: 570,
+    // top: 375
+    left: pinMain.style.left,
+    top: pinMain.style.top
+  };
+
+  // Функция удаления Пинов при дезактивации страницы и при нажатии на кнопку сбороса
+  function removePins() {
+    var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    for (var i = 0; i < pins.length; i++) {
+      pinsContainerMap.removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
+      // pins.remove();
+    }
+  }
+
+  // Функция переключения классов при активации и дезактивации страницы
+  function toggleSiteState() {
+    map.classList.toggle('map--faded');
+    formAds.classList.toggle('ad-form--disabled');
+  }
+
+  // Возврат Главного пина в точку его первоначального состояния
+  function resetMainPinPosition() {
+    pinMain.style.left = MAIN_PIN_INITIAL_POSITION.left;
+    pinMain.style.top = MAIN_PIN_INITIAL_POSITION.top;
+  }
+
   // Экспорт
   window.map = {
     addPins: addPins,
     getCoordinates: getCoordinates,
-    onPinClick: onPinClick
-
+    // onPinClick: onPinClick,
+    setDataArray: setDataArray,
+    closeCard: closeCard,
+    removePins: removePins,
+    toggleSiteState: toggleSiteState,
+    resetMainPinPosition: resetMainPinPosition
   };
 
 })();
