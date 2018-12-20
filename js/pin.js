@@ -6,13 +6,13 @@
   var SIZE_PIN_WIDTH = 50;
   var SIZE_PIN_HEIGHT = 70;
 
-  // Путь к шаблону пина
-  var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-
   // Функция создания пина
   function сreatePin(object) {
+    // Путь к шаблону пина
+    var pinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
+
     var clonedPin = pinTemplate.cloneNode(true);
     var clonedPinStyle = clonedPin.style;
 
