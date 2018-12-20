@@ -16,17 +16,29 @@
   // Контейнер Div Пинов на карте
   var pinsContainerMap = document.querySelector('.map__pins');
 
+  // Форма объявлений
+  var formAds = document.querySelector('.ad-form');
+
+
   // Функция добавления пинов в разметку через фрагмент
-  // Экспорт  window.pin
   function addPins(array) {
     var fragmentPin = document.createDocumentFragment();
 
-    for (var i = 0; i < array.length; i++) {
-      fragmentPin.appendChild(window.pin.сreate(array[i]));
+    // Проверка у переданного с сервера массива, есть ли у его объектов ключа .offer
+    var newArray = array.filter(function (elem) {
+      return elem.offer;
+    });
+
+    for (var i = 0; i < newArray.length; i++) {
+      fragmentPin.appendChild(window.pin.сreate(newArray[i]));
     }
 
     pinsContainerMap.appendChild(fragmentPin);
+
+    // Обработчик события
+    pinsContainerMap.addEventListener('click', onPinClick);
   }
+
 
   // Функция добавления карточки в разметку
   function addCard(object) {
