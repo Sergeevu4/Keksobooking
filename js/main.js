@@ -10,8 +10,6 @@
   // Все теги fieldset на стайте +
   var formFieldset = document.querySelectorAll('fieldset');
 
-  // var pinsContainerMap = document.querySelector('.map__pins');
-
   // Функция активации страницы в mouseup (callback)
   function activatePage() {
 
@@ -19,9 +17,8 @@
     window.backend.load(function (array) {
       var arrayWithId = setId(array);
       window.map.addPins(arrayWithId);
-      // console.log(arrayWithId);
       window.map.setDataArray(arrayWithId);
-    }, window.message.showMessageError);
+    }, window.message.showErrorMessage);
 
     window.map.toggleSiteState();
 
@@ -31,26 +28,12 @@
     // импорт window.form.toggleForms
     window.form.toggleForms(formFiltersAdsSelect);
     window.form.toggleForms(formFieldset);
-
-    // pinsContainerMap.addEventListener('click', window.map.onPinClick);
   }
 
 
   // Функция дезактивации страницы
   function deactivatePage() {
     window.form.onResetFormSite();
-    // window.map.toggleSiteState();
-
-    // // импорт window.form.toggleForms
-    // window.form.toggleForms(formFiltersAdsSelect);
-    // window.form.toggleForms(formFieldset);
-
-    // window.map.removePins();
-    // window.map.closeCard();
-    // window.map.resetMainPinPosition();
-
-    // window.form.writeАddressFormAds(window.map.getCoordinates());
-    // window.form.resetFormAds();
   }
 
   // Функция по добавлению id в массив с объектами полученный c сервера
@@ -80,10 +63,5 @@
   window.form.setDeactivatePageCallback(function () {
     deactivatePage();
   });
-
-  // Экспорт
-  // window.main = {
-  //   deactivatePage: deactivatePage
-  // };
 
 })();
