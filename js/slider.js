@@ -15,22 +15,6 @@
 
   // Главный Pin
   var pinMain = document.querySelector('.map__pin--main');
-  // pinMain.style.zIndex = '1000';
-
-  /*  // Путь к главному пространству - карта(section) ++
-  var map = document.querySelector('.map');
-
-  // Контейнер Div Пинов на карте +
-  var pinsContainerMap = document.querySelector('.map__pins');
-
-  // Форма объявлений +
-  var formAds = document.querySelector('.ad-form');
-
-  // Форма фильтрации все теги select (коллекция элементов формы) +
-  var formFiltersAdsSelect = document.querySelectorAll('select');
-
-  // Все теги fieldset на стайте +
-  var formFieldset = document.querySelectorAll('fieldset'); */
 
   // Объявления пустого объекта, стартовая точка координат при Drag'n'Drop
   var startCoords = {};
@@ -78,11 +62,6 @@
       pinMainMouseMoveCallback();
     }
 
-    /* // импорт c map - window.map
-        window.map.writeАddressFormAds(window.map.getCoordinates());
-        Убрал так как вставка написанных координат не всегда потребуется в других слайдерах
-    */
-
     var shift = {
       x: evt.clientX - startCoords.x,
       y: evt.clientY - startCoords.y
@@ -105,25 +84,6 @@
     if (pinMainMouseUpCallback) {
       pinMainMouseUpCallback();
     }
-
-    /* Вся внешняя логика
-
-      if (map.classList.contains('map--faded')) {
-      // Импорт с data -  window.data,   window.pin
-      window.map.addPins(window.data.generatedObjects);
-      map.classList.remove('map--faded');
-      formAds.classList.remove('ad-form--disabled');
-
-      // импорт c map - window.map
-      window.map.writeАddressFormAds(window.map.getCoordinates());
-
-      // импорт window.form.toggleForms
-      window.form.toggleForms(formFiltersAdsSelect);
-      window.form.toggleForms(formFieldset);
-    }
-
-    // импорт c map - window.map
-    pinsContainerMap.addEventListener('click', window.map.onPinClick); */
 
     document.removeEventListener('mousemove', onPinMainMouseMove);
     document.removeEventListener('mouseup', onPinMainMouseUp);
