@@ -12,6 +12,14 @@
     '100': ['0']
   };
 
+  // Объект тип апартаментов и цена
+  var TypePrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
   // Путь к главному пространству - карта(section)
   var map = document.querySelector('.map');
 
@@ -32,7 +40,6 @@
 
   // Адрес в форме объявлений
   var addressFormAds = formAds.querySelector('#address');
-  addressFormAds.readOnly = true;
 
   // Поля формы в HTML тип апартаментов и цена
   var typeApartmentAds = formAds.querySelector('#type');
@@ -48,18 +55,6 @@
 
   // Кнопка сброса в неактивное состояние сайта
   var buttonResetFormSite = formAds.querySelector('.ad-form__reset');
-
-
-  // Объект тип апартаментов и цена
-  var TypePrice = {
-    BUNGALO: 0,
-    FLAT: 1000,
-    HOUSE: 5000,
-    PALACE: 10000
-  };
-
-  // Callback переменная показа сообщения об ошибки
-  // var showMessageErrorCallback = null;
 
   // Callback переменная дезактивации страницы
   var deactivatePageCallback = null;
@@ -134,8 +129,8 @@
   formAds.addEventListener('submit', function (evt) {
     window.backend.send(new FormData(formAds), function () {
       deactivatePageCallback();
-      window.message.showMessageSuccess();
-    }, window.message.showMessageError);
+      window.message.showSuccessMessage();
+    }, window.message.showErrorMessage);
     evt.preventDefault();
   });
 
