@@ -4,6 +4,9 @@
   // Высота острия главного пина +
   var PIN_MAIN_HEIGHT_POINTER = 19;
 
+  // Массив с объектами с сервера
+  var dataArray = [];
+
   // Путь к главному пространству - карта(section) ++
   var map = document.querySelector('.map');
 
@@ -18,6 +21,12 @@
 
   // Форма объявлений
   var formAds = document.querySelector('.ad-form');
+
+  // Объект с записанными первоначальными координатами для последующего возврата Главного пина
+  var mainPinInitialPosition = {
+    left: pinMain.style.left,
+    top: pinMain.style.top
+  };
 
 
   // Функция добавления пинов в разметку через фрагмент
@@ -59,21 +68,12 @@
     return coordinates;
   }
 
-  // Объект с координатами
-  // Импорт window.form
 
-  // // (Handler) Функция внесения координат в адрес input
-  // function writeАddressFormAds(object) {
-  //   addressFormAds.value = (object.x + ',' + object.y);
-  // }
-
-  // Массив с объектами
-  var dataArray = [];
   // Функция для получения массива с сервера и передача его в onPinClick
   function setDataArray(array) {
     dataArray = array;
-    // console.log(dataArray);
   }
+
 
   // (Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
   function onPinClick(evt) {
@@ -108,7 +108,7 @@
     var card = document.querySelector('.map__card');
     var activePin = document.querySelector('.map__pin--active');
     if (card) {
-      map.removeChild(document.querySelector('.map__card'));
+      card.remove();
       activePin.classList.remove('map__pin--active');
     }
   }
@@ -124,22 +124,12 @@
   // Обработчик события клика и последующего закрытия карточки
   document.addEventListener('keydown', onEscPress);
 
-
-  // Объект с записанными первоначальными координатами для последующего возврата Главного пина
-  var MAIN_PIN_INITIAL_POSITION = {
-    // left: 570,
-    // top: 375
-    left: pinMain.style.left,
-    top: pinMain.style.top
-  };
-
   // Функция удаления Пинов при дезактивации страницы и при нажатии на кнопку сбороса
   function removePins() {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
 
     for (var i = 0; i < pins.length; i++) {
-      pinsContainerMap.removeChild(document.querySelector('.map__pin:not(.map__pin--main)'));
-      // pins.remove();
+      pins[i].remove();
     }
   }
 
@@ -149,17 +139,17 @@
     formAds.classList.toggle('ad-form--disabled');
   }
 
+
   // Возврат Главного пина в точку его первоначального состояния
   function resetMainPinPosition() {
-    pinMain.style.left = MAIN_PIN_INITIAL_POSITION.left;
-    pinMain.style.top = MAIN_PIN_INITIAL_POSITION.top;
+    pinMain.style.left = mainPinInitialPosition.left;
+    pinMain.style.top = mainPinInitialPosition.top;
   }
 
   // Экспорт
   window.map = {
     addPins: addPins,
     getCoordinates: getCoordinates,
-    // onPinClick: onPinClick,
     setDataArray: setDataArray,
     closeCard: closeCard,
     removePins: removePins,
