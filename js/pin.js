@@ -6,16 +6,13 @@
   var SIZE_PIN_WIDTH = 50;
   var SIZE_PIN_HEIGHT = 70;
 
-  // Путь к шаблону пина
-  var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-
-  // Контейнер Div Пинов на карте
-  var pinsContainerMap = document.querySelector('.map__pins');
-
   // Функция создания пина
   function сreatePin(object) {
+    // Путь к шаблону пина
+    var pinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
+
     var clonedPin = pinTemplate.cloneNode(true);
     var clonedPinStyle = clonedPin.style;
 
@@ -28,19 +25,8 @@
     return clonedPin;
   }
 
-  // Функция добавления пинов в разметку через фрагмент
-  function addPins(array) {
-    var fragmentPin = document.createDocumentFragment();
-
-    for (var i = 0; i < array.length; i++) {
-      fragmentPin.appendChild(сreatePin(array[i]));
-    }
-
-    pinsContainerMap.appendChild(fragmentPin);
-  }
-
   // Экспорт
   window.pin = {
-    addPins: addPins
+    сreate: сreatePin
   };
 })();

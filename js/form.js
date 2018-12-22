@@ -12,6 +12,14 @@
     '100': ['0']
   };
 
+  // Объект тип апартаментов и цена
+  var TypePrice = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
+  };
+
   // Путь к главному пространству - карта(section)
   var map = document.querySelector('.map');
 
@@ -31,8 +39,7 @@
   var formAds = document.querySelector('.ad-form');
 
   // Адрес в форме объявлений
-  // var addressFormAds = formAds.querySelector('#address');
-  // addressFormAds.readOnly = true;
+  var addressFormAds = formAds.querySelector('#address');
 
   // Поля формы в HTML тип апартаментов и цена
   var typeApartmentAds = formAds.querySelector('#type');
@@ -46,13 +53,11 @@
   var roomApartmentAds = formAds.querySelector('#room_number');
   var capacityApartmentAds = formAds.querySelector('#capacity');
 
-  // Объект тип апартаментов и цена
-  var TypePrice = {
-    BUNGALO: 0,
-    FLAT: 1000,
-    HOUSE: 5000,
-    PALACE: 10000
-  };
+  // Кнопка сброса в неактивное состояние сайта
+  var buttonResetFormSite = formAds.querySelector('.ad-form__reset');
+
+  // Callback переменная дезактивации страницы
+  var deactivatePageCallback = null;
 
   // Функция переключения состояния элементов в формы (Самый короткий вариант реализации)
   function toggleForms(array) {
@@ -109,9 +114,65 @@
   // Обработчики события по изменению в поле формы: «Количество комнат» синхронизировано с полем «Количество мест»
   roomApartmentAds.addEventListener('change', onRoomApartmentAdsСhange);
 
+  // Функция внесения координат в адрес input
+  function writeАddressFormAds(object) {
+    addressFormAds.value = (object.x + ',' + object.y);
+  }
+
+  // Функция input очищения заполненной информации полях формы
+  function resetFormAds() {
+    formAds.reset();
+  }
+
+
+  // Функция отправки данных формы на сервер
+  formAds.addEventListener('submit', function (evt) {
+    window.backend.send(new FormData(formAds), function () {
+      deactivatePageCallback();
+      window.message.showSuccessMessage();
+    }, window.message.showErrorMessage);
+    evt.preventDefault();
+  });
+
+
+  // Функция полного сбороса страницы в неактивное состояние
+  function onResetFormSite() {
+    window.map.toggleSiteState();
+
+    toggleForms(formFiltersAdsSelect);
+    toggleForms(formFieldset);
+
+    window.map.closeCard();
+    window.map.removePins();
+
+    window.map.resetMainPinPosition();
+
+    writeАddressFormAds(window.map.getCoordinates());
+    resetFormAds();
+  }
+
+  // Обработчик события по клику на кнопку сброса, очищается вся страница сайта
+  buttonResetFormSite.addEventListener('click', onResetFormSite);
+
+
+  // Объект с координатами
+  // Импорт window.map
+  writeАddressFormAds(window.map.getCoordinates());
+
+
+  // Функция callback - которая получит функцию дезактивации страницы после успешной отправки сообщения.
+  function setDeactivatePageCallback(callback) {
+    deactivatePageCallback = callback;
+  }
+
+
   // Экспорт
   window.form = {
-    toggleForms: toggleForms
+    toggleForms: toggleForms,
+    writeАddressFormAds: writeАddressFormAds,
+    resetFormAds: resetFormAds,
+    onResetFormSite: onResetFormSite,
+    setDeactivatePageCallback: setDeactivatePageCallback
   };
 
 })();
