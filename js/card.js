@@ -99,9 +99,13 @@
   // Добавления списка преимуществ через фрагмент в карточку
   function addFeatures(features) {
     var fragmentFeatures = document.createDocumentFragment();
-    for (var i = 0; i < features.length; i++) {
-      fragmentFeatures.appendChild(createFeature(features[i]));
-    }
+    // for (var i = 0; i < features.length; i++) {
+    //   fragmentFeatures.appendChild(createFeature(features[i]));
+    // }
+    features.forEach(function (feature) {
+      fragmentFeatures.appendChild(createFeature(feature));
+    });
+
     cardFeaturesList.appendChild(fragmentFeatures);
   }
 
@@ -115,9 +119,12 @@
   // Функция добавляет полученные фотографии в карточку, разметку через фрагмент
   function addPhotos(photos) {
     var fragmentCardPhotos = document.createDocumentFragment();
-    for (var i = 0; i < photos.length; i++) {
-      fragmentCardPhotos.appendChild(createPhoto(photos[i]));
-    }
+    // for (var i = 0; i < photos.length; i++) {
+    //   fragmentCardPhotos.appendChild(createPhoto(photos[i]));
+    // }
+    photos.forEach(function (photo) {
+      fragmentCardPhotos.appendChild(createPhoto(photo));
+    });
     cardPhotos.appendChild(fragmentCardPhotos);
   }
 
