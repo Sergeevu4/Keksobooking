@@ -47,9 +47,13 @@
 
   // Функция по добавлению id в массив с объектами полученный c сервера
   function setId(ads) {
-    for (var i = 0; i < ads.length; i++) {
-      ads[i].id = 'map__pin_id' + (i + 1);
-    }
+    // for (var i = 0; i < ads.length; i++) {
+    //   ads[i].id = 'map__pin_id' + (i + 1);
+    // }
+    // return ads;
+    ads.forEach(function (ad, index) {
+      ad.id = 'map__pin_id' + [index + 1];
+    });
     return ads;
   }
 
