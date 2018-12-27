@@ -61,12 +61,12 @@
     }
   }
 
-  // Функция закрытия окна сообщения об ошибки, по клику на любую область
+  // (Handler) Функция закрытия окна сообщения об ошибки, по клику на любую область
   function onErrorMessageCloseClick() {
     closeMessage('error');
   }
 
-  // Функция закрытия окна сообщения успешной отправки формы, по клику на любую область
+  // (Handler) Функция закрытия окна сообщения успешной отправки формы, по клику на любую область
   function onSuccessMessageCloseClick() {
     closeMessage('success');
   }
@@ -84,7 +84,6 @@
       closeMessage('success');
     }
   }
-
 
   function onbuttonErrorMessageCloseClick() {
     closeMessage('error');

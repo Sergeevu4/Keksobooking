@@ -7,7 +7,7 @@
   var SIZE_PIN_HEIGHT = 70;
 
   // Функция создания пина
-  function сreatePin(object) {
+  function сreatePin(ad) {
     // Путь к шаблону пина
     var pinTemplate = document.querySelector('#pin')
     .content
@@ -16,11 +16,11 @@
     var clonedPin = pinTemplate.cloneNode(true);
     var clonedPinStyle = clonedPin.style;
 
-    clonedPinStyle.left = object.location.x - (SIZE_PIN_WIDTH / 2) + 'px';
-    clonedPinStyle.top = object.location.y - SIZE_PIN_HEIGHT + 'px';
-    clonedPin.id = object.id;
-    clonedPin.querySelector('img').src = object.author.avatar;
-    clonedPin.querySelector('img').alt = object.offer.title;
+    clonedPinStyle.left = ad.location.x - (SIZE_PIN_WIDTH / 2) + 'px';
+    clonedPinStyle.top = ad.location.y - SIZE_PIN_HEIGHT + 'px';
+    clonedPin.id = ad.id;
+    clonedPin.querySelector('img').src = ad.author.avatar;
+    clonedPin.querySelector('img').alt = ad.offer.title;
 
     return clonedPin;
   }
