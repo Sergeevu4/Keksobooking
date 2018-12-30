@@ -4,6 +4,12 @@
   // Количество отфильтрованных объявлений
   var FILTERED_ADS_NUMBER = 5;
 
+  // Диапазон стоимости
+  var Price = {
+    LOW: 10000,
+    HIGH: 50000,
+  };
+
   // Форма фильтрации объявлений
   var formFilters = document.querySelector('.map__filters');
 
@@ -27,12 +33,6 @@
 
   // callback переменная
   var updatePinsCallback = null;
-
-  // Диапазон стоимости
-  var Price = {
-    LOW: 10000,
-    HIGH: 50000,
-  };
 
   // Обработчики событий изменения формы фильтрации
   typeApartment.addEventListener('change', onFilterChange);
