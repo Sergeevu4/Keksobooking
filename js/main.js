@@ -21,13 +21,10 @@
     window.formAd.writeАddressformAd(window.map.getCoordinates());
   }
 
-  var filteredAds;
-
-
   // Функция  массива данных с сервера и дальнейшие манипуляции с данными, фильтрация + отрисовка пинов
   function updatePins(ads) {
     // Фильтрация полученного массива данных с сервера
-    filteredAds = window.formFilters.filter(ads);
+    var filteredAds = window.formFilters.filter(ads);
     // Закрытие открытых карточек
     window.map.closeCard();
     // Удаление старых пинов из разметки
@@ -47,10 +44,6 @@
 
   // Функция по добавлению id в массив с объектами полученный c сервера
   function setId(ads) {
-    // for (var i = 0; i < ads.length; i++) {
-    //   ads[i].id = 'map__pin_id' + (i + 1);
-    // }
-    // return ads;
     ads.forEach(function (ad, index) {
       ad.id = 'map__pin_id' + [index + 1];
     });

@@ -6,12 +6,12 @@
   var CARDS_PHOTO_WIDTH = '45';
   var CARDS_PHOTO_HEIGHT = '40';
 
-  // Словарь типов апартаментов
-  var typeMap = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+  // Типы апартаментов
+  var TypeApartment = {
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
 
   // Путь к шаблону карточки
@@ -20,12 +20,12 @@
   .querySelector('.map__card');
 
   // Список преимуществ
-  var cardFeaturesList = null;
+  var cardFeatures = null;
   // Фотографии
   var cardPhotos = null;
 
   // Функция создания карточки
-  function createCard(Ad) {
+  function createCard(ad) {
     // Клонирование карточки со всеми элементами из template
     var clonedCard = cardTemplate.cloneNode(true);
     // Заголовок
@@ -35,7 +35,7 @@
     // Стоимость проживания
     var cardPrice = clonedCard.querySelector('.popup__text--price');
     // Лист преимуществ (особенностей) в карточке объявления
-    cardFeaturesList = clonedCard.querySelector('.popup__features');
+    cardFeatures = clonedCard.querySelector('.popup__features');
     // Тип апартаментов (жилья)
     var cardTypeApartment = clonedCard.querySelector('.popup__type');
     // Количество комнат ~ количество гостей
@@ -50,45 +50,47 @@
     var cardAvatar = clonedCard.querySelector('.popup__avatar');
 
     // Обязательные поля формы объявления
-    cardAvatar.src = Ad.author.avatar;
-    cardTitle.textContent = Ad.offer.title;
-    cardAddress.textContent = Ad.offer.address;
-    cardPrice.textContent = Ad.offer.price + '₽/ночь';
-    cardTypeApartment.textContent = typeMap[Ad.offer.type];
+    cardAvatar.src = ad.author.avatar;
+    cardTitle.textContent = ad.offer.title;
+    cardAddress.textContent = ad.offer.address;
+    cardPrice.textContent = ad.offer.price + '₽/ночь';
+    cardTypeApartment.textContent = TypeApartment[ad.offer.type];
 
-    if (Ad.offer.rooms) {
-      cardCapacity.textContent = Ad.offer.rooms + ' комнаты для ' + Ad.offer.rooms + ' гостей.';
+
+    if (ad.offer.rooms && ad.offer.guests) {
+      cardCapacity.textContent = ad.offer.rooms + getRooms(ad.offer.rooms) + ad.offer.guests + ((ad.offer.guests === 1) ? ' гостя' : ' гостей') + '.';
+
     } else {
       cardCapacity.classList.add('hidden');
     }
 
-    if (Ad.offer.checkin && Ad.offer.checkout) {
-      cardTimeResidence.textContent = 'Заезд после ' + Ad.offer.checkin + ', выезд до ' + Ad.offer.checkout + '.';
+    if (ad.offer.checkin && ad.offer.checkout) {
+      cardTimeResidence.textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout + '.';
     } else {
       cardTimeResidence.classList.add('hidden');
     }
 
-    if (Ad.offer.description) {
-      cardDescription.textContent = Ad.offer.description;
+    if (ad.offer.description) {
+      cardDescription.textContent = ad.offer.description;
     } else {
       cardDescription.classList.add('hidden');
     }
 
     // Стирания первоначальных элементов списоков у фрагмента
-    cardFeaturesList.innerHTML = '';
+    cardFeatures.innerHTML = '';
     cardPhotos.innerHTML = '';
 
 
-    if (Ad.offer.features.length) {
+    if (ad.offer.features.length) {
       // Вызов функции по созданию списка преимуществ через фрагмент в карточку
-      addFeatures(Ad.offer.features);
+      addFeatures(ad.offer.features);
     } else {
-      cardFeaturesList.classList.add('hidden');
+      cardFeatures.classList.add('hidden');
     }
 
-    if (Ad.offer.photos.length) {
+    if (ad.offer.photos.length) {
       // Вызов функции по созданию фотографий и их отрисовку через фрагмент в карточку
-      addPhotos(Ad.offer.photos);
+      addPhotos(ad.offer.photos);
     } else {
       cardPhotos.classList.add('hidden');
     }
@@ -99,14 +101,11 @@
   // Добавления списка преимуществ через фрагмент в карточку
   function addFeatures(features) {
     var fragmentFeatures = document.createDocumentFragment();
-    // for (var i = 0; i < features.length; i++) {
-    //   fragmentFeatures.appendChild(createFeature(features[i]));
-    // }
     features.forEach(function (feature) {
       fragmentFeatures.appendChild(createFeature(feature));
     });
 
-    cardFeaturesList.appendChild(fragmentFeatures);
+    cardFeatures.appendChild(fragmentFeatures);
   }
 
   // Добавления создание элемента списка преимуществ
@@ -119,13 +118,23 @@
   // Функция добавляет полученные фотографии в карточку, разметку через фрагмент
   function addPhotos(photos) {
     var fragmentCardPhotos = document.createDocumentFragment();
-    // for (var i = 0; i < photos.length; i++) {
-    //   fragmentCardPhotos.appendChild(createPhoto(photos[i]));
-    // }
     photos.forEach(function (photo) {
       fragmentCardPhotos.appendChild(createPhoto(photo));
     });
     cardPhotos.appendChild(fragmentCardPhotos);
+  }
+
+  // Функция проверки количества комнат в полученном с сервера объявлений и подстановка правильного окончания
+  function getRooms(roomsNumber) {
+    var roomText = '';
+    if ((roomsNumber === 1) || (roomsNumber > 20 && roomsNumber % 10 === 1)) {
+      roomText = ' комната для ';
+    } else if ((roomsNumber >= 2 && roomsNumber <= 4) || (roomsNumber > 20 && roomsNumber % 10 >= 2 && roomsNumber % 10 <= 4)) {
+      roomText = ' комнаты для ';
+    } else {
+      roomText = ' комнат для ';
+    }
+    return roomText;
   }
 
   // Функция создает фотографию

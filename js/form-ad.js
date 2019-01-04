@@ -12,7 +12,7 @@
     '100': ['0']
   };
 
-  // Объект тип апартаментов и цена
+  // Объект: тип апартаментов и цена
   var TypePrice = {
     BUNGALO: 0,
     FLAT: 1000,
@@ -44,6 +44,18 @@
   // Кнопка сброса в неактивное состояние сайта
   var buttonResetFormSite = formAd.querySelector('.ad-form__reset');
 
+  // input для загрузки Аватара
+  var avatarInput = formAd.querySelector('#avatar');
+
+  // Картинка Аватар (img)
+  var avatarAd = formAd.querySelector('.ad-form-header__preview img');
+
+  // input для загрузки Картинок
+  var imagesInput = formAd.querySelector('#images');
+
+  // Блок (div) в котором будут размещены картинки
+  var imagesContainer = formAd.querySelector('.ad-form__photo');
+
   // Callback переменная дезактивации страницы
   var successSubmitCallback = null;
 
@@ -53,6 +65,12 @@
 
   // Объект с координатами
   writeАddressformAd(window.map.getCoordinates());
+
+  // Вызов функции превью для аватара avatarAd (img)
+  window.preview(avatarInput, avatarAd);
+
+  // Вызов функции превью для нескольких изображений imagesContainer(div)
+  window.preview(imagesInput, imagesContainer);
 
   // Обработчики события по изменению в поле формы: время заезда, время выезда
   timeInApartmentAd.addEventListener('change', onTimeInApartmentAdСhange);

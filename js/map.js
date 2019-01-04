@@ -43,15 +43,6 @@
   function addPins(ads) {
     var fragmentPin = document.createDocumentFragment();
 
-    // Проверка у переданного с сервера массива, есть ли у его объектов ключа .offer
-    // var newArray = ads.filter(function (elem) {
-    //   return elem.offer;
-    // });
-
-    // for (var i = 0; i < newArray.length; i++) {
-    //   fragmentPin.appendChild(window.pin.сreate(newArray[i]));
-    // }
-
     ads.filter(function (ad) {
       return ad.offer;
     }).forEach(function (ad) {
@@ -113,9 +104,7 @@
   // Функция удаления Пинов при дезактивации страницы и при нажатии на кнопку сбороса
   function removePins() {
     var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    // for (var i = 0; i < pins.length; i++) {
-    //   pins[i].remove();
-    // }
+
     Array.from(pins).forEach(function (pin) {
       pin.remove();
     });
