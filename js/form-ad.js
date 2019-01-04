@@ -66,6 +66,9 @@
   // Объект с координатами
   writeАddressformAd(window.map.getCoordinates());
 
+  // Вызов функции сихронизации типа жилья и стоимости
+  setPriceParameters();
+
   // Вызов функции превью для аватара avatarAd (img)
   window.preview(avatarInput, avatarAd);
 
@@ -76,14 +79,14 @@
   timeInApartmentAd.addEventListener('change', onTimeInApartmentAdСhange);
   timeOutApartmentAd.addEventListener('change', onTimeOutApartmentAdСhange);
 
-  // Обработчик события по клику на кнопку сброса, очищается вся страница сайта
-  buttonResetFormSite.addEventListener('click', onResetFormSite);
-
   // Обработчик события изменению в поле формы: Тип апартаментов
   typeApartmentAd.addEventListener('change', onTypeApartmentAdChange);
 
   // Обработчики события по изменению в поле формы: «Количество комнат» синхронизировано с полем «Количество мест»
   roomApartmentAd.addEventListener('change', onRoomApartmentAdСhange);
+
+  // Обработчик события по клику на кнопку сброса, очищается вся страница сайта
+  buttonResetFormSite.addEventListener('click', onResetFormSite);
 
 
   // Вспомогательная функция переключения состояния элементов в формы (принимает внутрь форму)
@@ -94,14 +97,18 @@
     });
   }
 
-  // (Handler) Функция обработчика событий синхронизация полей(тип апартаментов и цены)
-  function onTypeApartmentAdChange() {
+  // Функция отвечающая за синхронизация полей(тип апартаментов и цены)
+  function setPriceParameters() {
     var currentTypeApartment = typeApartmentAd.value.toUpperCase();
     var currentMinPrice = TypePrice[currentTypeApartment];
     priceApartmentAd.placeholder = currentMinPrice;
     priceApartmentAd.min = currentMinPrice;
   }
 
+  // (Handler) Функция обработчика событий синхронизация полей(тип апартаментов и цены)
+  function onTypeApartmentAdChange() {
+    setPriceParameters();
+  }
 
   // (Handler) Функция обработчика событий синхронизация полей(время выезда = времени въезда)
   function onTimeInApartmentAdСhange() {
