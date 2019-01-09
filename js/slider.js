@@ -32,8 +32,8 @@
       y: evt.clientY
     };
 
-    document.addEventListener('mousemove', onPinMainMouseMove);
-    document.addEventListener('mouseup', onPinMainMouseUp);
+    document.addEventListener('mousemove', onPinMainMousemove);
+    document.addEventListener('mouseup', onPinMainMouseup);
   });
 
   // Функция: условие ограничения для главного пина при перемещении (mousemove)
@@ -56,7 +56,7 @@
   }
 
   // (Handler) Функция обработчика события mousemove
-  function onPinMainMouseMove(evt) {
+  function onPinMainMousemove(evt) {
     evt.preventDefault();
     if (pinMainMouseMoveCallback) {
       pinMainMouseMoveCallback();
@@ -79,14 +79,14 @@
   }
 
   // (Handler) Функция обработчика события mouseup - через callback
-  function onPinMainMouseUp(evt) {
+  function onPinMainMouseup(evt) {
     evt.preventDefault();
     if (pinMainMouseUpCallback) {
       pinMainMouseUpCallback();
     }
 
-    document.removeEventListener('mousemove', onPinMainMouseMove);
-    document.removeEventListener('mouseup', onPinMainMouseUp);
+    document.removeEventListener('mousemove', onPinMainMousemove);
+    document.removeEventListener('mouseup', onPinMainMouseup);
   }
 
   // Функция callback - рассчета + внесения координат в адрес input
