@@ -31,10 +31,7 @@
   // Массив с объектами с сервера
   var dataAds = [];
 
-  // Обработчик события клика и последующего закрытия карточки
-  document.addEventListener('keydown', onEscPress);
-
-  // Функция для получения массива с сервера и передача его в onPinClick
+  // Функция для получения массива с сервера и передача его в onPinsContainerMapClick
   function setSaveAds(ads) {
     dataAds = ads;
   }
@@ -52,7 +49,7 @@
     pinsContainerMap.appendChild(fragmentPin);
 
     // Обработчик события
-    pinsContainerMap.addEventListener('click', onPinClick);
+    pinsContainerMap.addEventListener('click', onPinsContainerMapClick);
   }
 
   // Функция добавления карточки в разметку
@@ -71,7 +68,7 @@
   }
 
   // (Handler) Функция обработчик: по нажатию на пин => отрисовка карточки в HTML
-  function onPinClick(evt) {
+  function onPinsContainerMapClick(evt) {
     var pinsClick = evt.target.closest('.map__pin:not(.map__pin--main)');
 
     if (pinsClick) {
@@ -90,15 +87,28 @@
 
       // Закрытие карточки по кнопке
       var closeCardButton = document.querySelector('.popup__close');
-      closeCardButton.addEventListener('click', closeCard);
+      // Обработчики события клика и нажатия Ecs для закрытия карточки
+      closeCardButton.addEventListener('click', onCloseCardButtonClick);
+      document.addEventListener('keydown', onEscKeydown);
     }
   }
 
-  // (Handler) Функция обработчика нажатия по Escape
-  function onEscPress(evt) {
+  // (Handler) Функция обработчика, закрытие карточки по нажатию по Escape
+  function onEscKeydown(evt) {
     if (evt.code === 'Escape') {
       closeCard();
     }
+  }
+
+  // (Handler) (Handler) Функция обработчика, закрытие карточки по нажатию по click
+  function onCloseCardButtonClick() {
+    closeCard();
+  }
+
+  // Функция удаления обработчика событий в момент дезактивации страницы
+  function removeHandlers() {
+    pinsContainerMap.removeEventListener('click', onPinsContainerMapClick);
+    document.removeEventListener('keydown', onEscKeydown);
   }
 
   // Функция удаления Пинов при дезактивации страницы и при нажатии на кнопку сбороса
@@ -146,7 +156,8 @@
     closeCard: closeCard,
     removePins: removePins,
     toggleSiteState: toggleSiteState,
-    resetMainPinPosition: resetMainPinPosition
+    resetMainPinPosition: resetMainPinPosition,
+    removeHandlers: removeHandlers
   };
 
 })();
