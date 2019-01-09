@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Сергей Козлов](https://up.htmlacademy.ru/javascript/16/user/682607).
-* Наставник: [Сергей Буртылёв](https://htmlacademy.ru/profile/id3341).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
