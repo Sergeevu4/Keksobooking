@@ -41,7 +41,7 @@
   }
 
   // Функция отправки запроса с данными формы на сервер
-  function backendSend(data, onLoad, onError) {
+  function sendBackend(data, onLoad, onError) {
     var xhr = createRequest(onLoad, onError);
 
     xhr.open('POST', SEND_URL);
@@ -50,9 +50,8 @@
   }
 
   // Функция получения(загрузки) данных (массива с объектами) с сервера
-  function backendLoad(onLoad, onError) {
+  function loadBackend(onLoad, onError) {
     var xhr = createRequest(onLoad, onError);
-    // console.log(xhr.response);
 
     xhr.open('GET', LOAD_URL);
     xhr.send();
@@ -60,8 +59,8 @@
 
   // Экспорт
   window.backend = {
-    send: backendSend,
-    load: backendLoad
+    send: sendBackend,
+    load: loadBackend
   };
 
 })();

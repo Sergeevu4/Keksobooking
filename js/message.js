@@ -3,13 +3,18 @@
   // Main на странице сайта
   var siteMain = document.querySelector('main');
 
+  // Путь к шаблону сообщения на странице
+  var errorMessageTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+  // Путь к шаблону сообщения на странице
+  var successMessageTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
   // Ошибка при загрузке или отправки данных на сервере
   function showErrorMessage(errorMessage) {
-    // Путь к шаблону сообщения на странице
-    var errorMessageTemplate = document.querySelector('#error')
-    .content
-    .querySelector('.error');
-
     var clonedErrorMessage = errorMessageTemplate.cloneNode(true);
     var buttonErrorMessage = clonedErrorMessage.querySelector('.error__button');
 
@@ -21,22 +26,17 @@
 
     document.addEventListener('click', onErrorMessageCloseClick);
     buttonErrorMessage.addEventListener('click', onbuttonErrorMessageCloseClick);
-    document.addEventListener('keydown', onErrorMessageEscPresskeyDown);
+    document.addEventListener('keydown', onErrorMessageEscKeydown);
   }
 
   // Сообщение об успешной отправке формы на сервер
   function showSuccessMessage() {
-    // Путь к шаблону сообщения на странице
-    var successMessageTemplate = document.querySelector('#success')
-    .content
-    .querySelector('.success');
-
     var clonedSuccessMessage = successMessageTemplate.cloneNode(true);
 
     siteMain.appendChild(clonedSuccessMessage);
 
     document.addEventListener('click', onSuccessMessageCloseClick);
-    document.addEventListener('keydown', onSuccessMessageEscPresskeyDown);
+    document.addEventListener('keydown', onSuccessMessageEscKeydown);
   }
 
   // Функция закрытия окна сообщений (при ошибки и успешной отправки)
@@ -47,12 +47,12 @@
       switch (classMessage) {
         case 'error':
           document.removeEventListener('click', onErrorMessageCloseClick);
-          document.removeEventListener('keydown', onErrorMessageEscPresskeyDown);
+          document.removeEventListener('keydown', onErrorMessageEscKeydown);
           break;
 
         case 'success':
           document.removeEventListener('click', onSuccessMessageCloseClick);
-          document.removeEventListener('keydown', onSuccessMessageEscPresskeyDown);
+          document.removeEventListener('keydown', onSuccessMessageEscKeydown);
           break;
 
         default:
@@ -72,14 +72,14 @@
   }
 
   // Функция закрытия окна сообщения успешной отправки формы по ESC
-  function onErrorMessageEscPresskeyDown(evt) {
+  function onErrorMessageEscKeydown(evt) {
     if (evt.code === 'Escape') {
       closeMessage('error');
     }
   }
 
   // Функция закрытия окна сообщения об ошибки по ESC
-  function onSuccessMessageEscPresskeyDown(evt) {
+  function onSuccessMessageEscKeydown(evt) {
     if (evt.code === 'Escape') {
       closeMessage('success');
     }
@@ -91,7 +91,7 @@
 
   // Экспорт
   window.message = {
-    showErrorMessage: showErrorMessage,
-    showSuccessMessage: showSuccessMessage
+    showError: showErrorMessage,
+    showSuccess: showSuccessMessage
   };
 })();

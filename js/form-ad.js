@@ -31,7 +31,7 @@
 
   // Поля формы в HTML тип апартаментов и цена
   var typeApartmentAd = formAd.querySelector('#type');
-  var priceApartmentAd = formAd.querySelector('#price');
+  var priceAd = formAd.querySelector('#price');
 
   // Поля формы время заезда и время выезда
   var timeInApartmentAd = formAd.querySelector('#timein');
@@ -42,7 +42,7 @@
   var capacityApartmentAd = formAd.querySelector('#capacity');
 
   // Кнопка сброса в неактивное состояние сайта
-  var buttonResetFormSite = formAd.querySelector('.ad-form__reset');
+  var resetButtonAd = formAd.querySelector('.ad-form__reset');
 
   // input для загрузки Аватара
   var avatarInput = formAd.querySelector('#avatar');
@@ -56,37 +56,82 @@
   // Блок (div) в котором будут размещены картинки
   var imagesContainer = formAd.querySelector('.ad-form__photo');
 
+  // Заголовок объявления
+  var titleAd = formAd.querySelector('#title');
+
+  // Кнопка отправки формы
+  var submitButtonAd = formAd.querySelector('.ad-form__submit');
+
   // Callback переменная дезактивации страницы
   var successSubmitCallback = null;
+
+  var resetFormCallback = null;
 
   // Вызов функции переключения состояния активности полей формы
   toggleForm(formFilters);
   toggleForm(formAd);
 
   // Объект с координатами
-  writeАddressformAd(window.map.getCoordinates());
+  writeАddressFormAd(window.map.getCoordinates());
 
   // Вызов функции сихронизации типа жилья и стоимости
   setPriceParameters();
 
-  // Вызов функции превью для аватара avatarAd (img)
-  window.preview(avatarInput, avatarAd);
+  // Функция добавления обработчиков событий в момент активации страницы
+  function addHandlers() {
+    // Обработчики события по изменению в поле формы: время заезда, время выезда
+    timeInApartmentAd.addEventListener('change', onTimeInApartmentAdСhange);
+    timeOutApartmentAd.addEventListener('change', onTimeOutApartmentAdСhange);
 
-  // Вызов функции превью для нескольких изображений imagesContainer(div)
-  window.preview(imagesInput, imagesContainer);
+    // Обработчик события изменению в поле формы: Тип апартаментов
+    typeApartmentAd.addEventListener('change', onTypeApartmentAdChange);
 
-  // Обработчики события по изменению в поле формы: время заезда, время выезда
-  timeInApartmentAd.addEventListener('change', onTimeInApartmentAdСhange);
-  timeOutApartmentAd.addEventListener('change', onTimeOutApartmentAdСhange);
+    // Обработчики события по изменению в поле формы: «Количество комнат» синхронизировано с полем «Количество мест»
+    roomApartmentAd.addEventListener('change', onRoomApartmentAdСhange);
 
-  // Обработчик события изменению в поле формы: Тип апартаментов
-  typeApartmentAd.addEventListener('change', onTypeApartmentAdChange);
+    // Обработчик отправки формы на сервер
+    formAd.addEventListener('submit', onFormAdSubmit);
 
-  // Обработчики события по изменению в поле формы: «Количество комнат» синхронизировано с полем «Количество мест»
-  roomApartmentAd.addEventListener('change', onRoomApartmentAdСhange);
+    // Обработчик события по клику на кнопку сброса, очищается вся страница сайта
+    resetButtonAd.addEventListener('click', onResetButtonClick);
 
-  // Обработчик события по клику на кнопку сброса, очищается вся страница сайта
-  buttonResetFormSite.addEventListener('click', onResetFormSite);
+    // Обработчик события по клику на кнопку отправки, для проверки валидности формы
+    submitButtonAd.addEventListener('click', onSubmitButtonAdclick);
+
+    // Обработчик события проверки валидности заголовка объявления
+    titleAd.addEventListener('input', onTitleAdInput);
+
+    // Обработчик события проверки валидности на поле стоимости апартаментов
+    priceAd.addEventListener('input', onPriceApartmentAdInput);
+  }
+
+  // Функция удаления обработчиков событий в момент дезактивации страницы
+  function removeHandlers() {
+    timeInApartmentAd.removeEventListener('change', onTimeInApartmentAdСhange);
+    timeOutApartmentAd.removeEventListener('change', onTimeOutApartmentAdСhange);
+    typeApartmentAd.removeEventListener('change', onTypeApartmentAdChange);
+    roomApartmentAd.removeEventListener('change', onRoomApartmentAdСhange);
+    formAd.removeEventListener('submit', onFormAdSubmit);
+    resetButtonAd.removeEventListener('click', onResetButtonClick);
+    submitButtonAd.removeEventListener('click', onSubmitButtonAdclick);
+    titleAd.removeEventListener('input', onTitleAdInput);
+    priceAd.removeEventListener('input', onPriceApartmentAdInput);
+  }
+
+
+  // Функция активация превью в форме объявления
+  function activatePreview() {
+    // Вызов функции превью для аватара avatarAd (img)
+    window.preview.add(avatarInput, avatarAd);
+    // Вызов функции превью для нескольких изображений imagesContainer(div)
+    window.preview.add(imagesInput, imagesContainer);
+  }
+
+  // Функция по удалению обработчиков превью в форме объявления
+  function deactivatePreview() {
+    window.preview.remove(avatarInput);
+    window.preview.remove(imagesInput);
+  }
 
 
   // Вспомогательная функция переключения состояния элементов в формы (принимает внутрь форму)
@@ -101,8 +146,8 @@
   function setPriceParameters() {
     var currentTypeApartment = typeApartmentAd.value.toUpperCase();
     var currentMinPrice = TypePrice[currentTypeApartment];
-    priceApartmentAd.placeholder = currentMinPrice;
-    priceApartmentAd.min = currentMinPrice;
+    priceAd.placeholder = currentMinPrice;
+    priceAd.min = currentMinPrice;
   }
 
   // (Handler) Функция обработчика событий синхронизация полей(тип апартаментов и цены)
@@ -131,37 +176,49 @@
   }
 
   // Функция внесения координат в адрес input
-  function writeАddressformAd(object) {
+  function writeАddressFormAd(object) {
     addressformAd.value = (object.x + ',' + object.y);
   }
 
   // Функция input очищения заполненной информации полях формы
-  function resetformAd() {
+  function resetFormAd() {
     formAd.reset();
   }
 
+  // Функция проверки валидности полей, добавление красной рамки, при невалидном состоянии поля.
+  function validateForm() {
+    Array.from(arguments).forEach(function (input) {
+      input.style.cssText = !input.checkValidity() ? 'border: 2px solid red;' : '';
+    });
+  }
 
-  // Функция отправки данных формы на сервер
-  formAd.addEventListener('submit', function (evt) {
+  // (Handler) Функция проверки валидности полей формы, по клику на кнопку submit
+  function onSubmitButtonAdclick() {
+    validateForm(titleAd, priceAd);
+  }
+
+  // (Handler) Функция проверки валидности поля стоимости
+  function onPriceApartmentAdInput(evt) {
+    validateForm(evt.currentTarget);
+  }
+
+  // (Handler) Функция проверки валидности поля заголовка
+  function onTitleAdInput(evt) {
+    validateForm(evt.currentTarget);
+  }
+
+  // (Handler) Функция отправки данных на сервер
+  function onFormAdSubmit(evt) {
     window.backend.send(new FormData(formAd), function () {
       successSubmitCallback();
-      window.message.showSuccessMessage();
-    }, window.message.showErrorMessage);
+      window.message.showSuccess();
+    }, window.message.showError);
     evt.preventDefault();
-  });
+  }
 
-
-  // (Handler) Функция полного сбороса страницы в неактивное состояние
-  function onResetFormSite() {
-    window.map.toggleSiteState();
-
-    window.map.closeCard();
-    window.map.removePins();
-
-    window.map.resetMainPinPosition();
-
-    writeАddressformAd(window.map.getCoordinates());
-    resetformAd();
+  // (Handler) Функция дезактивации страницы после нажатия на кнопку сброса
+  function onResetButtonClick() {
+    resetFormCallback();
   }
 
   // Функция callback - которая получит функцию дезактивации страницы после успешной отправки сообщения.
@@ -169,14 +226,24 @@
     successSubmitCallback = callback;
   }
 
+  // Функция callback - которая получит функцию дезактивации страницы после нажатия на кнопку сброса
+  function setButtonResetCallback(callback) {
+    resetFormCallback = callback;
+
+  }
 
   // Экспорт
   window.formAd = {
     toggle: toggleForm,
-    writeАddressformAd: writeАddressformAd,
-    resetformAd: resetformAd,
-    onResetFormSite: onResetFormSite,
-    setSuccessSubmitCallback: setSuccessSubmitCallback
+    writeАddress: writeАddressFormAd,
+    reset: resetFormAd,
+    setPriceParameters: setPriceParameters,
+    setSuccessSubmitCallback: setSuccessSubmitCallback,
+    setButtonResetCallback: setButtonResetCallback,
+    addHandlers: addHandlers,
+    removeHandlers: removeHandlers,
+    activatePreview: activatePreview,
+    deactivatePreview: deactivatePreview
   };
 
 })();

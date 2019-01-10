@@ -13,13 +13,30 @@
       var adsWithId = setId(ads);
       window.formFilters.setDataAds(adsWithId);
       updatePins(adsWithId);
-    }, window.message.showErrorMessage);
+    }, window.message.showError);
 
     window.map.toggleSiteState();
 
-    // импорт c form - window.map (рассчета + внесения координат в адрес input) - при активации страницы, с учетом острия (асинхронно)
-    window.formAd.writeАddressformAd(window.map.getCoordinates());
+    // Функция передачи callback (дезактивация страницы) при успешной отправки формы
+    window.formAd.setSuccessSubmitCallback(function () {
+      deactivatePage();
+    });
+
+    // Функция передачи callback (дезактивация страницы) нажатия на кнопку сброса
+    window.formAd.setButtonResetCallback(function () {
+      deactivatePage();
+    });
+
+    // Импорт c form - window.map (рассчета + внесения координат в адрес input) - при активации страницы, с учетом острия (асинхронно)
+    window.formAd.writeАddress(window.map.getCoordinates());
+    // Добавления обработчиков в момент активации страницы
+    window.formAd.addHandlers();
+    // Активация превью
+    window.formAd.activatePreview();
+    // Активация формы фильтрации
+    window.formFilters.addHandler();
   }
+
 
   // Функция  массива данных с сервера и дальнейшие манипуляции с данными, фильтрация + отрисовка пинов
   function updatePins(ads) {
@@ -38,9 +55,22 @@
 
   // Функция дезактивации страницы
   function deactivatePage() {
-    window.formAd.onResetFormSite();
-  }
+    window.map.toggleSiteState();
 
+    window.map.closeCard();
+    window.map.removePins();
+
+    window.map.resetMainPinPosition();
+    window.map.removeHandlers();
+
+    window.formAd.reset();
+    window.formAd.setPriceParameters();
+    window.formAd.writeАddress(window.map.getCoordinates());
+    window.formAd.removeHandlers();
+    window.formAd.deactivatePreview();
+    window.formFilters.removeHandler();
+
+  }
 
   // Функция по добавлению id в массив с объектами полученный c сервера
   function setId(ads) {
@@ -49,6 +79,7 @@
     });
     return ads;
   }
+
 
   // Функция передачи callback (активации страницы)
   window.slider.setPinMainMouseUpCallback(function () {
@@ -60,14 +91,9 @@
 
   // Функция передачи callback (рассчета + внесения координат в адрес input) при каждом движении курсора (асинхронно)
   window.slider.setPinMainMouseMoveCallback(function () {
-    window.formAd.writeАddressformAd(window.map.getCoordinates());
+    window.formAd.writeАddress(window.map.getCoordinates());
   });
 
-
-  // Функция передачи callback (дезактивация страницы) при успешной отправки формы
-  window.formAd.setSuccessSubmitCallback(function () {
-    deactivatePage();
-  });
 
   // Функция передачи callback фильтрации массива который пришел сервера, дальнейшая отрисовка пинов + карточек
   window.formFilters.setUpdatePinsCallback(function (ads) {

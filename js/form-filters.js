@@ -10,6 +10,14 @@
     HIGH: 50000,
   };
 
+  // Перечисление состояний в форме
+  var FilterValue = {
+    ANY: 'any',
+    LOW: 'low',
+    MIDDLE: 'middle',
+    HIGH: 'high'
+  };
+
   // Форма фильтрации объявлений
   var formFilters = document.querySelector('.map__filters');
 
@@ -25,22 +33,21 @@
   // Количество гостей
   var guestsApartment = formFilters.querySelector('#housing-guests');
 
-  // Преимущества
-  var featuresApartment = document.querySelector('#housing-features');
-
   // Пересохраненный массив данных с сервера
   var dataAds = [];
 
   // callback переменная
   var updatePinsCallback = null;
 
-  // Обработчики событий изменения формы фильтрации
-  typeApartment.addEventListener('change', onFilterChange);
-  priceApartment.addEventListener('change', onFilterChange);
-  roomsApartment.addEventListener('change', onFilterChange);
-  guestsApartment.addEventListener('change', onFilterChange);
-  featuresApartment.addEventListener('change', onFilterChange);
+  // Функция добавления обработчика на форму фильтрации после активации страницы
+  function addHandler() {
+    formFilters.addEventListener('change', onFilterChange);
+  }
 
+  // Функция удаления обработчика на форму фильтрации после дезактивации страницы
+  function removeHandler() {
+    formFilters.removeEventListener('change', onFilterChange);
+  }
 
   // (Handler) функция обработчик: которая принимает вызывает функцию с отфильтрованным массивом данных которая, этот массив данных отрисовывает полученный массив на странице
   function onFilterChange() {
@@ -53,41 +60,35 @@
 
   // Функция фильтрации по количеству комнат
   function isTypeMatch(ad) {
-    return ad.offer.type === typeApartment.value || typeApartment.value === 'any';
+    return ad.offer.type === typeApartment.value || typeApartment.value === FilterValue.ANY;
   }
 
   // Функция фильтрации по количеству комнат
   function isRoomsMatch(ad) {
-    return ad.offer.rooms === parseInt(roomsApartment.value, 10) || roomsApartment.value === 'any';
+    return ad.offer.rooms === parseInt(roomsApartment.value, 10) || roomsApartment.value === FilterValue.ANY;
   }
 
   // Функция количество гостей
   function isGuestsMatch(ad) {
-    return ad.offer.guests === parseInt(guestsApartment.value, 10) || guestsApartment.value === 'any';
+    return ad.offer.guests === parseInt(guestsApartment.value, 10) || guestsApartment.value === FilterValue.ANY;
   }
 
   // Функция фильтрации по стоимости
   function isPriceMatch(ad) {
-    var priceMath;
     switch (priceApartment.value) {
-      case 'middle':
-        priceMath = ad.offer.price >= Price.LOW && ad.offer.price <= Price.HIGH;
-        break;
+      case FilterValue.LOW:
+        return ad.offer.price <= Price.LOW;
 
-      case 'low':
-        priceMath = ad.offer.price <= Price.LOW;
-        break;
+      case FilterValue.MIDDLE:
+        return ad.offer.price >= Price.LOW && ad.offer.price <= Price.HIGH;
 
-      case 'high':
-        priceMath = ad.offer.price >= Price.HIGH;
-        break;
+      case FilterValue.HIGH:
+        return ad.offer.price >= Price.HIGH;
 
-      case 'any':
+      case FilterValue.ANY:
       default:
-        priceMath = true;
-        break;
+        return true;
     }
-    return priceMath;
   }
 
   // Функция фильтрации преимуществ: checkbox
@@ -96,16 +97,14 @@
     var isSuited = Array.from(checkedFeatures).every(function (feature) {
       return ad.offer.features.includes(feature.value);
     });
-
     return isSuited;
   }
 
   // Основная функция фильтрации
   function filterData(ads) {
-    var filteredAds = ads.filter(function (ad) {
+    return ads.filter(function (ad) {
       return isTypeMatch(ad) && isRoomsMatch(ad) && isGuestsMatch(ad) && isPriceMatch(ad) && isFeaturesMatch(ad);
-    });
-    return (filteredAds.length > FILTERED_ADS_NUMBER) ? filteredAds.slice(0, FILTERED_ADS_NUMBER) : filteredAds;
+    }).slice(0, FILTERED_ADS_NUMBER);
   }
 
   // Функция получения и сохранения массива с сервера, для дальнейшей манипуляции(фильтрации) и отрисовкой пинов ~ карточек на странице
@@ -122,7 +121,9 @@
   window.formFilters = {
     setDataAds: setDataAds,
     filter: filterData,
-    setUpdatePinsCallback: setUpdatePinsCallback
+    setUpdatePinsCallback: setUpdatePinsCallback,
+    addHandler: addHandler,
+    removeHandler: removeHandler
   };
 
 })();

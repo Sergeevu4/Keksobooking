@@ -2,13 +2,16 @@
 
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  // Объект содержащий в себе input + обработчики
+  var previewInput = {};
+  // Массив для поселяющего удаления обработчиков
+  var previewInputs = [];
 
   // Основная функция по превью изображений в зависимости от того с какого input была загрузка, и была ли она вообще.
   function preview(fileChooser, filePreview) {
     // fileChooser - input type = 'file'
     // filePreview - Img - если он есть в разметке (аватар), или это div (контейнер) внутри которого будут отрисовывается img (несколько загружаемых картинок)
-
-    fileChooser.addEventListener('change', function () {
+    function onFileChooserChange() {
       // files - это файл, файлы загружаемые через input
       var files = fileChooser.files;
 
@@ -17,6 +20,32 @@
         showMultiplePreview(files, filePreview);
       } else if (!fileChooser.multiple && files.length) {
         showSinglePreview(files[0], filePreview);
+      }
+    }
+
+    // Объект содержащий в себе input, методы добавления и удаления обработчиков
+    previewInput = {
+      input: fileChooser,
+      activate: function () {
+        this.input.addEventListener('change', onFileChooserChange);
+      },
+      deactivate: function () {
+        this.input.removeEventListener('change', onFileChooserChange);
+      }
+    };
+
+    // Добавления в массив объектов c методами и с названием того места (input) на котором будет находится обработчик.
+    previewInputs.push(previewInput);
+
+    // Добавления обработчика событий на fileChooser
+    previewInput.activate();
+  }
+
+  // Функция по удалению обработчиков с input
+  function removePreview(fileChooser) {
+    previewInputs.forEach(function (item) {
+      if (item.input === fileChooser) {
+        item.deactivate();
       }
     });
   }
@@ -45,10 +74,10 @@
   // Функция для превью нескольких файлов
   function showMultiplePreview(files, containerPreview) {
     // Фрагмент в который будут помещаться div(img)
-    var fragmentfiles = document.createDocumentFragment();
+    var fragmentFiles = document.createDocumentFragment();
 
     // Родительский div, в который будет помещаться сам фрагмент
-    var containerfiles = containerPreview.parentNode;
+    var containerFiles = containerPreview.parentNode;
 
     // Превращения коллекции в массив и последующий цикл
     Array.from(files).forEach(function (file) {
@@ -74,15 +103,17 @@
       newСontainerPreview.appendChild(newImg);
 
       // Кладу полученный div c изображением внутрь фрагмента
-      fragmentfiles.appendChild(newСontainerPreview);
-
+      fragmentFiles.appendChild(newСontainerPreview);
     });
 
     // Помещаю собранный фрагмент (div c изображением) в родительский DOM - узел
-    containerfiles.appendChild(fragmentfiles);
+    containerFiles.appendChild(fragmentFiles);
   }
 
   // Экспорт
-  window.preview = preview;
+  window.preview = {
+    add: preview,
+    remove: removePreview
+  };
 
 })();
