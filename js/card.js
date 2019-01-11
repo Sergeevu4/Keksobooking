@@ -6,6 +6,19 @@
   var CARDS_PHOTO_WIDTH = '45';
   var CARDS_PHOTO_HEIGHT = '40';
 
+  var GuestEnding = {
+    DEFAULT: ' гостей',
+    ONE: ' гостя'
+  };
+
+  var Pluralize = {
+    ONE: 1,
+    TWO: 2,
+    FOUR: 4,
+    TWENTY: 20,
+    MULTIPLE_OF_TEN: 10
+  };
+
   // Типы апартаментов
   var TypeApartment = {
     PALACE: 'Дворец',
@@ -56,9 +69,8 @@
     cardPrice.textContent = ad.offer.price + '₽/ночь';
     cardTypeApartment.textContent = TypeApartment[ad.offer.type];
 
-
     if (ad.offer.rooms && ad.offer.guests) {
-      cardCapacity.textContent = ad.offer.rooms + getRooms(ad.offer.rooms) + ad.offer.guests + ((ad.offer.guests === 1) ? ' гостя' : ' гостей') + '.';
+      cardCapacity.textContent = ad.offer.rooms + getRooms(ad.offer.rooms) + ad.offer.guests + ((ad.offer.guests === Pluralize.ONE) ? GuestEnding.ONE : GuestEnding.DEFAULT) + '.';
 
     } else {
       cardCapacity.classList.add('hidden');
@@ -79,7 +91,6 @@
     // Стирания первоначальных элементов списоков у фрагмента
     cardFeaturesList.innerHTML = '';
     cardPhotosList.innerHTML = '';
-
 
     if (ad.offer.features.length) {
       // Вызов функции по созданию списка преимуществ через фрагмент в карточку
@@ -127,9 +138,9 @@
   // Функция проверки количества комнат в полученном с сервера объявлений и подстановка правильного окончания
   function getRooms(roomsNumber) {
     var roomText = '';
-    if ((roomsNumber === 1) || (roomsNumber > 20 && roomsNumber % 10 === 1)) {
+    if ((roomsNumber === Pluralize.ONE) || (roomsNumber > Pluralize.TWENTY && roomsNumber % Pluralize.MULTIPLE_OF_TEN === Pluralize.ONE)) {
       roomText = ' комната для ';
-    } else if ((roomsNumber >= 2 && roomsNumber <= 4) || (roomsNumber > 20 && roomsNumber % 10 >= 2 && roomsNumber % 10 <= 4)) {
+    } else if ((roomsNumber >= Pluralize.TWO && roomsNumber <= Pluralize.FOUR) || (roomsNumber > Pluralize.TWENTY && roomsNumber % Pluralize.MULTIPLE_OF_TEN >= Pluralize.TWO && roomsNumber % Pluralize.MULTIPLE_OF_TEN <= Pluralize.FOUR)) {
       roomText = ' комнаты для ';
     } else {
       roomText = ' комнат для ';
