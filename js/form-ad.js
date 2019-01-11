@@ -192,6 +192,13 @@
     });
   }
 
+  function resetValidateForm() {
+    var inputs = Array.from(document.querySelectorAll('input'));
+    inputs.forEach(function (input) {
+      input.style.cssText = '';
+    });
+  }
+
   // (Handler) Функция проверки валидности полей формы, по клику на кнопку submit
   function onSubmitButtonAdclick() {
     validateForm(titleAd, priceAd);
@@ -243,7 +250,8 @@
     addHandlers: addHandlers,
     removeHandlers: removeHandlers,
     activatePreview: activatePreview,
-    deactivatePreview: deactivatePreview
+    deactivatePreview: deactivatePreview,
+    resetValidate: resetValidateForm
   };
 
 })();

@@ -56,20 +56,19 @@
   // Функция дезактивации страницы
   function deactivatePage() {
     window.map.toggleSiteState();
-
     window.map.closeCard();
     window.map.removePins();
-
     window.map.resetMainPinPosition();
     window.map.removeHandlers();
 
     window.formAd.reset();
+    window.formAd.resetValidate();
     window.formAd.setPriceParameters();
     window.formAd.writeАddress(window.map.getCoordinates());
     window.formAd.removeHandlers();
     window.formAd.deactivatePreview();
-    window.formFilters.removeHandler();
 
+    window.formFilters.removeHandler();
   }
 
   // Функция по добавлению id в массив с объектами полученный c сервера

@@ -4,6 +4,8 @@
   // Высота острия главного пина +
   var PIN_MAIN_HEIGHT_POINTER = 19;
 
+  var ESC_KEY_NAME = 'Escape';
+
   // Путь к главному пространству - карта(section) ++
   var map = document.querySelector('.map');
 
@@ -95,7 +97,7 @@
 
   // (Handler) Функция обработчика, закрытие карточки по нажатию по Escape
   function onEscKeydown(evt) {
-    if (evt.code === 'Escape') {
+    if (evt.code === ESC_KEY_NAME) {
       closeCard();
     }
   }
